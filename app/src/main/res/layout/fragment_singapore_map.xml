@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/txtChooseRegionHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose a region"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10dp"/>
+
+    <ImageView
+        android:id="@+id/imgSgMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/singapore_map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.993" />
+
+    <Button
+        android:id="@+id/btnWestZone"
+        android:layout_width="109dp"
+        android:layout_height="108dp"
+        android:alpha="0"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="250dp"
+        android:layout_marginBottom="60dp"
+        android:text="West"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="@id/imgSgMap"
+        app:layout_constraintRight_toRightOf="@+id/imgSgMap"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap" />
+
+    <Button
+        android:id="@+id/btnWestZone2"
+        android:layout_width="106dp"
+        android:layout_height="84dp"
+        android:alpha="0"
+        android:text="West"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="@id/imgSgMap"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSgMap"
+        app:layout_constraintRight_toRightOf="@+id/imgSgMap"
+        android:layout_marginTop="180dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="250dp"
+        android:layout_marginBottom="50dp" />
+
+    <Button
+        android:id="@+id/btnNorthZone"
+        android:layout_width="81dp"
+        android:layout_height="102dp"
+        android:alpha="0"
+        android:layout_marginTop="-50dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="100dp"
+        android:text="North"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="@id/imgSgMap"
+        app:layout_constraintRight_toRightOf="@+id/imgSgMap"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap" />
+
+    <Button
+        android:id="@+id/btnEastZone"
+        android:layout_width="93dp"
+        android:layout_height="75dp"
+        android:alpha="0"
+        android:text="East"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="@id/imgSgMap"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSgMap"
+        app:layout_constraintRight_toRightOf="@+id/imgSgMap"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="60dp"/>
+
+    <Button
+        android:id="@+id/btnNorthEastZone"
+        android:layout_width="83dp"
+        android:layout_height="76dp"
+        android:alpha="0"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="130dp"
+        android:text="North East"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="@id/imgSgMap"
+        app:layout_constraintRight_toRightOf="@+id/imgSgMap"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap" />
+
+    <Button
+        android:id="@+id/btnNorthEastZone2"
+        android:layout_width="94dp"
+        android:layout_height="75dp"
+        android:alpha="0"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="290dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="160dp"
+        android:text="North East"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="@id/imgSgMap"
+        app:layout_constraintRight_toRightOf="@+id/imgSgMap"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap" />
+
+    <Button
+        android:id="@+id/btnCentralZone"
+        android:layout_width="104dp"
+        android:layout_height="74dp"
+        android:alpha="0"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="70dp"
+        android:text="Central"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSgMap"
+        app:layout_constraintLeft_toLeftOf="@id/imgSgMap"
+        app:layout_constraintRight_toRightOf="@+id/imgSgMap"
+        app:layout_constraintTop_toTopOf="@+id/imgSgMap" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
