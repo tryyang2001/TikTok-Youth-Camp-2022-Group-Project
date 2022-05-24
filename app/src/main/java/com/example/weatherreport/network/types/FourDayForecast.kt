@@ -16,7 +16,7 @@ class FourDayForecast {
 
     data class Forecast(
         val temperature: Temperature,
-        val data: String,
+        val date: String,
         val forecast: String,
         val relative_humidity: RelativeHumidity,
         val wind: Wind,

@@ -50,7 +50,7 @@ class TwentyFourHourForecast {
 
     data class Period(
         val time: Time,
-        val region: Regions
+        val regions: Regions
     )
 
     data class Time(
