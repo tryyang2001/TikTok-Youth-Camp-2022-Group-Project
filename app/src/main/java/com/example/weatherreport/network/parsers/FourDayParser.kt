@@ -3,7 +3,7 @@ package com.example.weatherreport.network.parsers
 import com.example.weatherreport.network.types.FourDayForecast
 import java.time.LocalDate
 
-class FourDayParser(date: LocalDate, res: FourDayForecast.Response) {
+class FourDayParser(date: LocalDate, res: FourDayForecast.Response): ForecastParser() {
     private val date: LocalDate
     private val res: FourDayForecast.Response
 

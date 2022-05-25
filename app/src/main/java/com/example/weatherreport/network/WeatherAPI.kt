@@ -1,12 +1,11 @@
 package com.example.weatherreport.network
 
-import com.squareup.moshi.Json
-import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Query
 import com.example.weatherreport.network.types.FourDayForecast
 import com.example.weatherreport.network.types.TwentyFourHourForecast
 import java.time.LocalDateTime
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface WeatherAPI {
     @GET("24-hour-weather-forecast")

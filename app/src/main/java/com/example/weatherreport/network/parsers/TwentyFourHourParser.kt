@@ -3,7 +3,7 @@ package com.example.weatherreport.network.parsers
 import com.example.weatherreport.network.types.TwentyFourHourForecast
 import java.time.LocalDate
 
-class TwentyFourHourParser(date: LocalDate, res: TwentyFourHourForecast.Response) {
+class TwentyFourHourParser(date: LocalDate, res: TwentyFourHourForecast.Response): ForecastParser() {
     private val date: LocalDate
     private val res: TwentyFourHourForecast.Response
 
