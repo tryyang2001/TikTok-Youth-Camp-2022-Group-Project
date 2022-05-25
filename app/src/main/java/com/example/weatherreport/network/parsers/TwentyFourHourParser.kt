@@ -1,19 +1,12 @@
 package com.example.weatherreport.network.parsers
 
 import com.example.weatherreport.network.types.TwentyFourHourForecast
-import java.time.LocalDate
 
-class TwentyFourHourParser(date: LocalDate, res: TwentyFourHourForecast.Response): ForecastParser() {
-    private val date: LocalDate
+class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser() {
     private val res: TwentyFourHourForecast.Response
 
     init {
-        this.date = date
         this.res = res
-    }
-
-    fun getCurrentDate(): String {
-        return date.toString()
     }
 
     fun getGeneralForecast(): String {
