@@ -4,13 +4,16 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updateLayoutParams
 import java.util.Calendar
- 
+import kotlin.concurrent.thread
+
 class MainActivity : AppCompatActivity() {
     private var btnPressed = true
     val frgRegionInfo = RegionInformation()
@@ -26,6 +29,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         selectBackgroundAndTextColors()
         onClickButtonChangeFragmentDisplay()
+
+        val weatherImg = findViewById<ImageView>(R.id.imgWeatherCondition)
+
+        //Animation for weather image
+        thread(start=true){
+            if(weatherImg.drawable.constantState== ResourcesCompat.getDrawable(resources, R.drawable.sunny, null)?.constantState){
+                val rotation = AnimationUtils.loadAnimation(applicationContext, R.anim.rotation)
+                rotation.setFillAfter(true)
+                weatherImg.startAnimation(rotation)
+            }
+            if(weatherImg.drawable.constantState==ResourcesCompat.getDrawable(resources, R.drawable.fair_moon, null)?.constantState){
+                val rocking = AnimationUtils.loadAnimation(applicationContext, R.anim.rocking)
+                rocking.fillAfter=true
+                rocking.fillBefore=true
+                weatherImg.startAnimation(rocking)
+            }
+            if(weatherImg.drawable.constantState==ResourcesCompat.getDrawable(resources, R.drawable.cloudy, null)?.constantState){
+                val bouncing = AnimationUtils.loadAnimation(applicationContext, R.anim.bouncing)
+                bouncing.fillAfter=true
+                bouncing.fillBefore=true
+                weatherImg.startAnimation(bouncing)
+            }
+        }
+
     }
 
     /**

@@ -10,6 +10,9 @@ import android.widget.TextView
 import com.example.weatherreport.network.parsers.FourDayParser
 import com.example.weatherreport.network.types.FourDayForecast
 import java.time.LocalDate
+import android.view.animation.AnimationUtils
+import androidx.core.content.res.ResourcesCompat
+import kotlin.concurrent.thread
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,6 +55,7 @@ class RegionInformation : Fragment() {
         }
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,8 +63,147 @@ class RegionInformation : Fragment() {
         val view = inflater.inflate(R.layout.fragment_region_information, container, false)
         getTextViewAndImageView(view)
         update4DaysWeather()
+        createAnimationForWeatherIcons()
         // Inflate the layout for this fragment
         return view
+    }
+
+    private fun createAnimationForWeatherIcons() {
+        val rotation = AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.rotation)
+        rotation.fillAfter = true
+        val rocking = AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.rocking)
+        rocking.fillAfter = true
+        rocking.fillBefore = true
+        val bouncing = AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.bouncing)
+        bouncing.fillAfter = true
+        bouncing.fillBefore = true
+
+        thread(start = true) {
+            if (imgMorningWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.sunny,
+                    null
+                )?.constantState
+            ) {
+                imgMorningWeatherCondition.startAnimation(rotation)
+            }
+            if (imgMorningWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
+                imgMorningWeatherCondition.startAnimation(bouncing)
+            }
+        }
+        thread(start = true) {
+            if (imgAfternoonWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.sunny,
+                    null
+                )?.constantState
+            ) {
+                imgAfternoonWeatherCondition.startAnimation(rotation)
+            }
+            if (imgAfternoonWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
+                imgAfternoonWeatherCondition.startAnimation(bouncing)
+            }
+        }
+        thread(start = true) {
+            if (imgNightWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.fair_moon,
+                    null
+                )?.constantState
+            ) {
+                imgNightWeatherCondition.startAnimation(rocking)
+            }
+            if (imgNightWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
+                imgNightWeatherCondition.startAnimation(bouncing)
+            }
+        }
+        thread(start = true) {
+            if (imgNext1DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.sunny,
+                    null
+                )?.constantState
+            ) {
+                imgNext1DateCondition.startAnimation(rotation)
+            }
+            if (imgNext1DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
+                imgNext1DateCondition.startAnimation(bouncing)
+            }
+        }
+        thread(start = true) {
+            if (imgNext2DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.sunny,
+                    null
+                )?.constantState
+            ) {
+                imgNext2DateCondition.startAnimation(rotation)
+            }
+            if (imgNext2DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
+                imgNext2DateCondition.startAnimation(bouncing)
+            }
+        }
+        thread(start = true) {
+            if (imgNext3DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.sunny,
+                    null
+                )?.constantState
+            ) {
+                imgNext3DateCondition.startAnimation(rotation)
+            }
+            if (imgNext3DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
+                imgNext3DateCondition.startAnimation(bouncing)
+            }
+        }
+        thread(start = true) {
+            if (imgNext4DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.sunny,
+                    null
+                )?.constantState
+            ) {
+                imgNext4DateCondition.startAnimation(rotation)
+            }
+            if (imgNext4DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
+                imgNext4DateCondition.startAnimation(bouncing)
+            }
+        }
     }
 
     private fun update4DaysWeather() {

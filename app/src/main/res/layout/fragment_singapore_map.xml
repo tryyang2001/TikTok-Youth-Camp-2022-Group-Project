@@ -23,7 +23,7 @@
         android:id="@+id/imgSgMap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/singaporemapnobg__2_"
+        android:src="@drawable/singapore_map"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
