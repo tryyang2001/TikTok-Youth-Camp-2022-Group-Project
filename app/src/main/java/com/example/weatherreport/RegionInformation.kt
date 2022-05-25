@@ -5,6 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import com.example.weatherreport.network.parsers.FourDayParser
+import com.example.weatherreport.network.types.FourDayForecast
+import java.time.LocalDate
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -20,6 +25,24 @@ class RegionInformation : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var txtDate : TextView
+    lateinit var txtMorningTemp : TextView
+    lateinit var txtAfternoonTemp : TextView
+    lateinit var txtNightTemp : TextView
+    lateinit var txtNext1Date : TextView
+    lateinit var txtNext2Date : TextView
+    lateinit var txtNext3Date : TextView
+    lateinit var txtNext4Date : TextView
+    lateinit var imgMorningWeatherCondition : ImageView
+    lateinit var imgAfternoonWeatherCondition : ImageView
+    lateinit var imgNightWeatherCondition : ImageView
+    lateinit var imgNext1DateCondition : ImageView
+    lateinit var imgNext2DateCondition : ImageView
+    lateinit var imgNext3DateCondition : ImageView
+    lateinit var imgNext4DateCondition : ImageView
+    val date = LocalDate.now() //TODO: replace with actual date
+    val res = FourDayForecast.Response(,) //TODO: replace with actual response
+    val parser4day = FourDayParser(date, res)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +56,53 @@ class RegionInformation : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        /*TODO: Change the text display for txtDate, txtMorningTemp, txtAfternoonTemp, txtNightTemp,
-           txtNext1Date, txtNext2Date, txtNext3Date, txtNext4Date, and image view photos:
-           imgMorningWeatherCondition, imgAfternoonWeatherCondition, imgNightWeatherCondition,
-           imgNext1DateCondition, imgNext2DateCondition, imgNext3DateCondition, imgNext4DateCondition
-        */
-
+        val view = inflater.inflate(R.layout.fragment_region_information, container, false)
+        getTextViewAndImageView(view)
+        update4DaysWeather()
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_region_information, container, false)
+        return view
+    }
+
+    private fun update4DaysWeather() {
+        txtNext1Date.text = parser4day.getDate(0)
+        txtNext2Date.text = parser4day.getDate(1)
+        txtNext3Date.text = parser4day.getDate(2)
+        txtNext4Date.text = parser4day.getDate(3)
+        val txtNext1DateForecast = parser4day.getGeneralForecast(0)
+        val txtNext2DateForecast = parser4day.getGeneralForecast(1)
+        val txtNext3DateForecast = parser4day.getGeneralForecast(2)
+        val txtNext4DateForecast = parser4day.getGeneralForecast(3)
+        determineWeatherIcon(txtNext1DateForecast, imgNext1DateCondition)
+        determineWeatherIcon(txtNext2DateForecast, imgNext2DateCondition)
+        determineWeatherIcon(txtNext3DateForecast, imgNext3DateCondition)
+        determineWeatherIcon(txtNext4DateForecast, imgNext4DateCondition)
+    }
+
+    private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
+        when (forecast) {
+            "Thundery" -> imageView.setBackgroundResource(R.drawable.thundery)
+            "Cloudy" -> imageView.setBackgroundResource(R.drawable.cloudy)
+            "Fair" -> imageView.setBackgroundResource(R.drawable.sunny)
+            "Rainy" -> imageView.setBackgroundResource(R.drawable.rainy)
+        }
+    }
+
+    fun getTextViewAndImageView(view : View) {
+        txtDate = view.findViewById(R.id.txtDate)
+        txtMorningTemp = view.findViewById(R.id.txtMorningTemp)
+        txtAfternoonTemp = view.findViewById(R.id.txtAfternoonTemp)
+        txtNightTemp = view.findViewById(R.id.txtNightTemp)
+        txtNext1Date = view.findViewById(R.id.txtNext1Date)
+        txtNext2Date = view.findViewById(R.id.txtNext2Date)
+        txtNext3Date = view.findViewById(R.id.txtNext3Date)
+        txtNext4Date = view.findViewById(R.id.txtNext4Date)
+        imgMorningWeatherCondition = view.findViewById(R.id.imgMorningWeatherCondition)
+        imgAfternoonWeatherCondition = view.findViewById(R.id.imgAfternoonWeatherCondition)
+        imgNightWeatherCondition = view.findViewById(R.id.imgNightWeatherCondition)
+        imgNext1DateCondition = view.findViewById(R.id.imgNext1Condition)
+        imgNext2DateCondition = view.findViewById(R.id.imgNext2Condition)
+        imgNext3DateCondition = view.findViewById(R.id.imgNext3Condition)
+        imgNext4DateCondition = view.findViewById(R.id.imgNext4Condition)
     }
 
     companion object {

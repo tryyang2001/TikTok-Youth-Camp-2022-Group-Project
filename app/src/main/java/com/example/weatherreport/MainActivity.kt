@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
@@ -12,6 +13,13 @@ import java.util.Calendar
  
 class MainActivity : AppCompatActivity() {
     private var btnPressed = true
+    val frgRegionInfo = RegionInformation()
+    val frgSingaporeMap = SingaporeMap()
+    lateinit var txtAppTitle : TextView
+    lateinit var txtRegion : TextView
+    lateinit var txtTemp : TextView
+    lateinit var txtWeatherCondition : TextView
+    lateinit var imgWeatherCondition : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +35,6 @@ class MainActivity : AppCompatActivity() {
      * previously selected region will be shown, replacing the map.
      */
     private fun onClickButtonChangeFragmentDisplay() {
-        val frgRegionInfo = RegionInformation()
-        val frgSingaporeMap = SingaporeMap()
         supportFragmentManager.beginTransaction().add(R.id.fvRegionInfo, frgRegionInfo).commit()
         val btnShowMap = findViewById<Button>(R.id.btnShowMap)
         btnShowMap.setOnClickListener {
@@ -61,26 +67,27 @@ class MainActivity : AppCompatActivity() {
         val mainLayout = findViewById<ConstraintLayout>(R.id.mainLayout)
         if (currTime >= 19 || currTime <= 6) {
             mainLayout.setBackgroundResource(R.drawable.nightime_background)
-            val txtAppTitle = findViewById<TextView>(R.id.txtAppTitle)
+            txtAppTitle = findViewById<TextView>(R.id.txtAppTitle)
             txtAppTitle.setTextColor(Color.parseColor("#FFFFFF"))
-            val txtRegion = findViewById<TextView>(R.id.txtRegion)
+            txtRegion = findViewById<TextView>(R.id.txtRegion)
             txtRegion.setTextColor(Color.parseColor("#FFFFFF"))
-            val txtTemp = findViewById<TextView>(R.id.txtTemperature)
+            txtTemp = findViewById<TextView>(R.id.txtTemperature)
             txtTemp.setTextColor(Color.parseColor("#FFFFFF"))
-            val txtWeatherCondition = findViewById<TextView>(R.id.txtWeatherCondition)
+            txtWeatherCondition = findViewById<TextView>(R.id.txtWeatherCondition)
             txtWeatherCondition.setTextColor(Color.parseColor("#FFFFFF"))
             val line = findViewById<View>(R.id.line1)
             line.setBackgroundColor(Color.parseColor("#FFFFFF"))
         } else {
             mainLayout.setBackgroundResource(R.drawable.daytime_background)
-            val txtAppTitle = findViewById<TextView>(R.id.txtAppTitle)
+            txtAppTitle = findViewById<TextView>(R.id.txtAppTitle)
             txtAppTitle.setTextColor(Color.parseColor("#000000"))
-            val txtRegion = findViewById<TextView>(R.id.txtRegion)
+            txtRegion = findViewById<TextView>(R.id.txtRegion)
             txtRegion.setTextColor(Color.parseColor("#000000"))
-            val txtTemp = findViewById<TextView>(R.id.txtTemperature)
+            txtTemp = findViewById<TextView>(R.id.txtTemperature)
             txtTemp.setTextColor(Color.parseColor("#000000"))
-            val txtWeatherCondition = findViewById<TextView>(R.id.txtWeatherCondition)
+            txtWeatherCondition = findViewById<TextView>(R.id.txtWeatherCondition)
             txtWeatherCondition.setTextColor(Color.parseColor("#000000"))
         }
+        imgWeatherCondition = findViewById(R.id.imgWeatherCondition)
     }
 }

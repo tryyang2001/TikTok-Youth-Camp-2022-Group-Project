@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.TranslateAnimation
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.updateLayoutParams
+import com.example.weatherreport.network.parsers.TwentyFourHourParser
+import com.example.weatherreport.network.types.TwentyFourHourForecast
+import java.time.LocalDate
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,48 +27,93 @@ class SingaporeMap : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
-    private fun slideUp(view : View) {
-        view.visibility = View.VISIBLE
-        val animate = TranslateAnimation(0F, 0F, view.height.toFloat(), 0F)
-        animate.duration = 300
-        animate.fillAfter = true
-        view.startAnimation(animate)
-    }
-
-    private fun slideDown(view : View) {
-        val animate = TranslateAnimation(0F, 0F, 0F, view.height.toFloat())
-        animate.duration = 300
-        animate.fillAfter = true
-        view.startAnimation(animate)
-    }
+    private val mainActivity = MainActivity()
+    private val frgRegionInformation = mainActivity.frgRegionInfo
+    private val date = LocalDate.now() //TODO: replace to real date
+    private val res = TwentyFourHourForecast.Response(, ) //TODO: replace to real response
+    private val parser24h = TwentyFourHourParser(date, res)
+    private val DEGREE = "°"
 
     private fun onClick(view : View) {
-        /* TODO: on clicking a zone from the map, sends correct API request to the server and update
-            corresponding data (such as the text views in activity_main.xml and RegionInformation.xml
-         */
+        frgRegionInformation.txtDate.text = parser24h.getCurrentDate()
+        mainActivity.txtTemp.text = parser24h.getGeneralAvgTemperature().toString() + DEGREE
+        var morningForecast = ""
+        var afternoonForecast = ""
+        var nightForecast = ""
         when(view.id) {
             R.id.btnWestZone -> {
-                Toast.makeText(activity?.applicationContext, "West Zone", Toast.LENGTH_SHORT).show()
-            }
-            R.id.btnWestZone2 -> {
+                mainActivity.txtRegion.text = "West Region"
+                morningForecast = parser24h.getMorningWestForecast()
+                afternoonForecast = parser24h.getNoonWestForecast()
+                nightForecast = parser24h.getNightWestForecast()
+                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
                 Toast.makeText(activity?.applicationContext, "West Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnNorthZone -> {
+                mainActivity.txtRegion.text = "North Region"
+                morningForecast = parser24h.getMorningNorthForecast()
+                afternoonForecast = parser24h.getNoonNorthForecast()
+                nightForecast = parser24h.getNightNorthForecast()
+                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
                 Toast.makeText(activity?.applicationContext, "North Zone", Toast.LENGTH_SHORT).show()
             }
-            R.id.btnNorthEastZone -> {
-                Toast.makeText(activity?.applicationContext, "North East Zone", Toast.LENGTH_SHORT).show()
-            }
-            R.id.btnNorthEastZone2 -> {
+            R.id.btnSouthZone -> {
+                mainActivity.txtRegion.text = "South Region"
+                morningForecast = parser24h.getMorningSouthForecast()
+                afternoonForecast = parser24h.getNoonSouthForecast()
+                nightForecast = parser24h.getNightSouthForecast()
+                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
                 Toast.makeText(activity?.applicationContext, "North East Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnEastZone -> {
+                mainActivity.txtRegion.text = "East Region"
+                morningForecast = parser24h.getMorningEastForecast()
+                afternoonForecast = parser24h.getNoonEastForecast()
+                nightForecast = parser24h.getNightEastForecast()
+                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
                 Toast.makeText(activity?.applicationContext, "East Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnCentralZone -> {
+                mainActivity.txtRegion.text = "Central Region"
+                morningForecast = parser24h.getMorningCentralForecast()
+                afternoonForecast = parser24h.getNoonCentralForecast()
+                nightForecast = parser24h.getNightCentralForecast()
+                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
                 Toast.makeText(activity?.applicationContext, "Central Zone", Toast.LENGTH_SHORT).show()
             }
+        }
+        update24HourInfo(morningForecast, afternoonForecast, nightForecast)
+    }
+
+    private fun update24HourInfo(morningForecast : String, afternoonForecast : String, nightForecast : String) {
+        determineWeatherIcon(morningForecast, frgRegionInformation.imgMorningWeatherCondition)
+        determineWeatherIcon(afternoonForecast, frgRegionInformation.imgAfternoonWeatherCondition)
+        determineWeatherIcon(nightForecast, frgRegionInformation.imgNightWeatherCondition)
+    }
+
+    private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
+        when (forecast) {
+            "Thundery" -> imageView.setBackgroundResource(R.drawable.thundery)
+            "Cloudy" -> imageView.setBackgroundResource(R.drawable.cloudy)
+            "Fair" -> {
+                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                if (currTime >= 19 || currTime <= 6) {
+                    imageView.setBackgroundResource(R.drawable.fair_moon)
+                } else {
+                    imageView.setBackgroundResource(R.drawable.sunny)
+                }
+            }
+            "Rainy" -> imageView.setBackgroundResource(R.drawable.rainy)
         }
     }
 
@@ -93,7 +140,7 @@ class SingaporeMap : Fragment() {
         val btnWest = view.findViewById<Button>(R.id.btnWestZone)
         val btnWest2 = view.findViewById<Button>(R.id.btnWestZone2)
         val btnNorth = view.findViewById<Button>(R.id.btnNorthZone)
-        val btnNorthEast = view.findViewById<Button>(R.id.btnNorthEastZone)
+        val btnNorthEast = view.findViewById<Button>(R.id.btnSouthZone)
         val btnNorthEast2 = view.findViewById<Button>(R.id.btnNorthEastZone2)
         val btnEast = view.findViewById<Button>(R.id.btnEastZone)
         val btnCentral = view.findViewById<Button>(R.id.btnCentralZone)
