@@ -100,7 +100,7 @@ class SingaporeMap : Fragment() {
             println("I am here!")
             update24HourInfo(morningForecast, afternoonForecast, nightForecast)
         }
-        (activity as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInformation)
+        (activity as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInformation).commit()
     }
 
     private fun update24HourInfo(morningForecast : String, afternoonForecast : String, nightForecast : String) {

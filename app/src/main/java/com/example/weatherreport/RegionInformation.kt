@@ -61,10 +61,13 @@ class RegionInformation : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_region_information, container, false)
-        getTextViewAndImageView(view)
         // Inflate the layout for this fragment
-        return view
+        return inflater.inflate(R.layout.fragment_region_information, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getTextViewAndImageView(view)
     }
 
     private fun getTextViewAndImageView(view : View) {
