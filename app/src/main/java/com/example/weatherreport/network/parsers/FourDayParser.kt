@@ -1,19 +1,12 @@
 package com.example.weatherreport.network.parsers
 
 import com.example.weatherreport.network.types.FourDayForecast
-import java.time.LocalDate
 
-class FourDayParser(date: LocalDate, res: FourDayForecast.Response) {
-    private val date: LocalDate
+class FourDayParser(res: FourDayForecast.Response): ForecastParser() {
     private val res: FourDayForecast.Response
 
     init {
-        this.date = date
         this.res = res
-    }
-
-    fun getCurrentDate(): String {
-        return date.toString()
     }
 
     fun getGeneralAvgTemperature(day_index: Int): Double {
@@ -22,7 +15,7 @@ class FourDayParser(date: LocalDate, res: FourDayForecast.Response) {
         return (low + high) / 2.0
     }
 
-    fun getDate(day_index: Int): String {
+    fun getRelativeDate(day_index: Int): String {
         return res.items[0].forecasts[day_index].date
     }
 
