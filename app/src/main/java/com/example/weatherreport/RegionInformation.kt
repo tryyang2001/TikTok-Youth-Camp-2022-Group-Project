@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.view.animation.AnimationUtils
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.weatherreport.network.parsers.FourDayParser
 import kotlin.concurrent.thread
 
@@ -40,6 +41,7 @@ class RegionInformation : Fragment() {
     lateinit var imgNext3DateCondition : ImageView
     lateinit var imgNext4DateCondition : ImageView
     lateinit var parser4day : FourDayParser
+    lateinit var viewModel : RegionInfoViewModel
 
     fun getTxtDate() : TextView {
         return txtDate
@@ -55,6 +57,7 @@ class RegionInformation : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        viewModel = ViewModelProvider(requireActivity()).get(RegionInfoViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -62,12 +65,37 @@ class RegionInformation : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_region_information, container, false)
+        val view = inflater.inflate(R.layout.fragment_region_information, container, false)
+        getTextViewAndImageView(view)
+        txtDate.text = viewModel.txtDate
+        txtMorningWeatherCondition.text = viewModel.txtMorningWeatherCondition
+        txtAfternoonWeatherCondition.text = viewModel.txtAfternoonWeatherCondition
+        txtNightWeatherCondition.text = viewModel.txtNightWeatherCondition
+        imgMorningWeatherCondition.setBackgroundResource(0)
+        imgAfternoonWeatherCondition.setBackgroundResource(0)
+        imgNightWeatherCondition.setBackgroundResource(0)
+        imgMorningWeatherCondition.setBackgroundResource(viewModel.imgMorningWeatherCondition)
+        imgAfternoonWeatherCondition.setBackgroundResource(viewModel.imgAfternoonWeatherCondition)
+        imgNightWeatherCondition.setBackgroundResource(viewModel.imgNightWeatherCondition)
+        txtNext1Date.text = viewModel.txtNext1Date
+        txtNext2Date.text = viewModel.txtNext2Date
+        txtNext3Date.text = viewModel.txtNext3Date
+        txtNext4Date.text = viewModel.txtNext4Date
+        imgNext1DateCondition.setBackgroundResource(0)
+        imgNext2DateCondition.setBackgroundResource(0)
+        imgNext3DateCondition.setBackgroundResource(0)
+        imgNext4DateCondition.setBackgroundResource(0)
+        imgNext1DateCondition.setBackgroundResource(viewModel.imgNext1DateWeatherCondition)
+        imgNext2DateCondition.setBackgroundResource(viewModel.imgNext2DateWeatherCondition)
+        imgNext3DateCondition.setBackgroundResource(viewModel.imgNext3DateWeatherCondition)
+        imgNext4DateCondition.setBackgroundResource(viewModel.imgNext4DateWeatherCondition)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getTextViewAndImageView(view)
+        //update4DaysWeather()
+        createAnimationForWeatherIcons()
     }
 
     private fun getTextViewAndImageView(view : View) {

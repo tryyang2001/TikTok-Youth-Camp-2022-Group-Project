@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import com.example.weatherreport.network.parsers.TwentyFourHourParser
 import java.util.Calendar
 
@@ -23,9 +23,9 @@ private const val ARG_PARAM2 = "param2"
 class SingaporeMap : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var frgRegionInformation : RegionInformation
     private lateinit var parser24h : TwentyFourHourParser
     private val DEGREE = "°"
+    private lateinit var viewModel : RegionInfoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,35 +33,35 @@ class SingaporeMap : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        viewModel = ViewModelProvider(requireActivity()).get(RegionInfoViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view : View = inflater.inflate(R.layout.fragment_singapore_map, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        return view
+        return inflater.inflate(R.layout.fragment_singapore_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        frgRegionInformation = (activity as MainActivity).frgRegionInfo
         parser24h = (activity as MainActivity).getTwentyFourHourParser()
         setMapButtonOnClickListener(view)
     }
 
     private fun onClick(view : View) {
-        frgRegionInformation = (activity as MainActivity).frgRegionInfo
-        frgRegionInformation.setTxtDate(parser24h.getCurrentDate())
-        print(frgRegionInformation.getTxtDate().text)
+        viewModel.txtDate = parser24h.getCurrentDate().format("dd/MM//yyyy")
         (activity as MainActivity).txtTemp.text = parser24h.getGeneralAvgTemperature().toString() + DEGREE
+        (activity as MainActivity).txtWeatherCondition.text = determineWeatherTextDescription(parser24h.getGeneralForecast())
         var morningForecast : String? = null
         var afternoonForecast : String? = null
         var nightForecast : String? = null
         when(view.id) {
             R.id.btnWestZone -> {
-                morningForecast = parser24h?.getMorningWestForecast()
-                afternoonForecast = parser24h?.getNoonWestForecast()
-                nightForecast = parser24h?.getNightWestForecast()
+                morningForecast = parser24h.getMorningWestForecast()
+                afternoonForecast = parser24h.getNoonWestForecast()
+                nightForecast = parser24h.getNightWestForecast()
                 Toast.makeText(activity?.applicationContext, "West Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnNorthZone -> {
@@ -96,41 +96,39 @@ class SingaporeMap : Fragment() {
         println(morningForecast)
         println(afternoonForecast)
         println(nightForecast)
-        if (morningForecast != null && afternoonForecast != null && nightForecast != null) {
-            println("I am here!")
-            update24HourInfo(morningForecast, afternoonForecast, nightForecast)
-        }
-        (activity as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInformation).commit()
+        update24HourInfo(morningForecast, afternoonForecast, nightForecast)
+        (activity as MainActivity).btnShowMap.performClick()
     }
 
-    private fun update24HourInfo(morningForecast : String, afternoonForecast : String, nightForecast : String) {
-        determineWeatherIcon(morningForecast, frgRegionInformation.imgMorningWeatherCondition)
-        determineWeatherIcon(afternoonForecast, frgRegionInformation.imgAfternoonWeatherCondition)
-        determineWeatherIcon(nightForecast, frgRegionInformation.imgNightWeatherCondition)
-        frgRegionInformation.txtMorningWeatherCondition.text = determineWeatherTextDescription(morningForecast)
-        frgRegionInformation.txtAfternoonWeatherCondition.text = determineWeatherTextDescription(afternoonForecast)
-        frgRegionInformation.txtNightWeatherCondition.text = determineWeatherTextDescription(nightForecast)
+    private fun update24HourInfo(morningForecast : String?, afternoonForecast : String?, nightForecast : String?) {
+        viewModel.imgMorningWeatherCondition = determineWeatherIcon(morningForecast)
+        viewModel.imgAfternoonWeatherCondition = determineWeatherIcon(afternoonForecast)
+        viewModel.imgNightWeatherCondition = determineWeatherIcon(nightForecast)
+        viewModel.txtMorningWeatherCondition = determineWeatherTextDescription(morningForecast)
+        viewModel.txtAfternoonWeatherCondition = determineWeatherTextDescription(afternoonForecast)
+        viewModel.txtNightWeatherCondition = determineWeatherTextDescription(nightForecast)
     }
 
-    private fun determineWeatherTextDescription(forecast: String) : String? {
-        return parser24h.getForecastCategory(forecast)
+    private fun determineWeatherTextDescription(forecast: String?) : String {
+        return parser24h.getForecastCategory(forecast).toString()
     }
 
-    private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
+    private fun determineWeatherIcon(forecast: String?) : Int{
         println(parser24h.getForecastCategory(forecast))
         when (parser24h.getForecastCategory(forecast)) {
-            "Thundery" -> imageView.setBackgroundResource(R.drawable.thundery)
-            "Cloudy" -> imageView.setBackgroundResource(R.drawable.cloudy)
+            "Thundery" -> return R.drawable.thundery
+            "Cloudy" -> return R.drawable.cloudy
             "Fair" -> {
                 val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                if (currTime >= 19 || currTime <= 6) {
-                    imageView.setBackgroundResource(R.drawable.fair_moon)
+                return if (currTime >= 19 || currTime <= 6) {
+                    R.drawable.fair_moon
                 } else {
-                    imageView.setBackgroundResource(R.drawable.sunny)
+                    R.drawable.sunny
                 }
             }
-            "Rainy" -> imageView.setBackgroundResource(R.drawable.rainy)
+            "Rainy" -> return R.drawable.rainy
         }
+        return 0
     }
 
     /**
@@ -142,7 +140,6 @@ class SingaporeMap : Fragment() {
         val btnSouth = view.findViewById<Button>(R.id.btnSouthZone)
         val btnEast = view.findViewById<Button>(R.id.btnEastZone)
         val btnCentral = view.findViewById<Button>(R.id.btnCentralZone)
-        val btnShowMap = activity?.findViewById<Button>(R.id.btnShowMap)
         btnWest.setOnClickListener { this.onClick(btnWest) }
         btnNorth.setOnClickListener { this.onClick(btnNorth) }
         btnSouth.setOnClickListener { this.onClick(btnSouth) }
