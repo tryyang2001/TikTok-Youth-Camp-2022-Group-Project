@@ -50,83 +50,83 @@ class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser
         return res.items[0].periods[periodIndex].regions.north
     }
 
-    fun getMorningWestForecast(): String {
+    fun getNightWestForecast(): String {
         return res.items[0].periods[0].regions.west
     }
 
-    fun getMorningEastForecast(): String {
+    fun getNightEastForecast(): String {
         return res.items[0].periods[0].regions.east
     }
 
-    fun getMorningCentralForecast(): String {
+    fun getNightCentralForecast(): String {
         return res.items[0].periods[0].regions.central
     }
 
-    fun getMorningSouthForecast(): String {
+    fun getNightSouthForecast(): String {
         return res.items[0].periods[0].regions.south
     }
 
-    fun getMorningNorthForecast(): String {
+    fun getNightNorthForecast(): String {
         return res.items[0].periods[0].regions.north
     }
 
-    fun getNoonWestForecast(): String {
+    fun getMorningWestForecast(): String {
         return res.items[0].periods[1].regions.west
     }
 
-    fun getNoonEastForecast(): String {
+    fun getMorningEastForecast(): String {
         return res.items[0].periods[1].regions.east
     }
 
-    fun getNoonCentralForecast(): String {
+    fun getMorningCentralForecast(): String {
         return res.items[0].periods[1].regions.central
     }
 
-    fun getNoonSouthForecast(): String {
+    fun getMorningSouthForecast(): String {
         return res.items[0].periods[1].regions.south
     }
 
-    fun getNoonNorthForecast(): String {
+    fun getMorningNorthForecast(): String {
         return res.items[0].periods[1].regions.north
     }
 
-    fun getEveningWestForecast(): String {
+    fun getNoonWestForecast(): String {
         return res.items[0].periods[2].regions.west
     }
 
-    fun getEveningEastForecast(): String {
+    fun getNoonEastForecast(): String {
         return res.items[0].periods[2].regions.east
     }
 
-    fun getEveningCentralForecast(): String {
+    fun getNoonCentralForecast(): String {
         return res.items[0].periods[2].regions.central
     }
 
-    fun getEveningSouthForecast(): String {
+    fun getNoonSouthForecast(): String {
         return res.items[0].periods[2].regions.south
     }
 
-    fun getEveningNorthForecast(): String {
+    fun getNoonNorthForecast(): String {
         return res.items[0].periods[2].regions.north
     }
 
-    fun getNightWestForecast(): String {
+    fun getEveningWestForecast(): String {
         return res.items[0].periods[3].regions.west
     }
 
-    fun getNightEastForecast(): String {
+    fun getEveningEastForecast(): String {
         return res.items[0].periods[3].regions.east
     }
 
-    fun getNightCentralForecast(): String {
+    fun getEveningCentralForecast(): String {
         return res.items[0].periods[3].regions.central
     }
 
-    fun getNightSouthForecast(): String {
+    fun getEveningSouthForecast(): String {
         return res.items[0].periods[3].regions.south
     }
 
-    fun getNightNorthForecast(): String {
+    fun getEveningNorthForecast(): String {
         return res.items[0].periods[3].regions.north
     }
 
