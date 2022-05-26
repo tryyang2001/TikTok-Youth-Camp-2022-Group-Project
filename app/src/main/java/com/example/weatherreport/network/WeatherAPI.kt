@@ -1,11 +1,10 @@
 package com.example.weatherreport.network
 
-import com.squareup.moshi.Json
+import com.example.weatherreport.network.types.FourDayForecast
+import com.example.weatherreport.network.types.TwentyFourHourForecast
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
-import com.example.weatherreport.network.types.FourDayForecast
-import com.example.weatherreport.network.types.TwentyFourHourForecast
 import java.time.LocalDate
 
 interface WeatherAPI {

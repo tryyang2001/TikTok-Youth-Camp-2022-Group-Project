@@ -5,12 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updateLayoutParams
@@ -25,20 +23,12 @@ import com.example.weatherreport.network.WeatherAPI
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
-import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
     private var btnPressed = true
 
     // API
     private val weatherAPI: WeatherAPI = NetworkModule.weatherAPI
-
-    // 24H parser
-    private var twentyFourHourParser: TwentyFourHourParser? = null
-
-    //4 day parser
-    private var fourDayParser: FourDayParser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getTwentyFourHourData()
@@ -139,15 +129,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getTwentyFourHourData() {
-        var currentDateTime: LocalDateTime = LocalDateTime.now()
-        var currentDate: LocalDate = LocalDate.now()
         // Asynchronous network call through enqueue
-        weatherAPI.getTwentyFourHourForecast(currentDate)
+        weatherAPI.getTwentyFourHourForecast()
             .enqueue(object : Callback<TwentyFourHourForecast.Response> {
                 override fun onResponse(call: Call<TwentyFourHourForecast.Response>,
                                         response: Response<TwentyFourHourForecast.Response>) {
                     val result = response.body() ?: return // null check
-                    twentyFourHourParser = TwentyFourHourParser(currentDate, result)
+                    val twentyFourHourParser = TwentyFourHourParser(result)
                 }
 
                 override fun onFailure(call: Call<TwentyFourHourForecast.Response>, t: Throwable) {
@@ -157,14 +145,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFourDayData() {
-        var currentDate: LocalDate = LocalDate.now()
         // Asynchronous network call through enqueue
-        weatherAPI.getFourDayForecast(currentDate)
+        weatherAPI.getFourDayForecast()
             .enqueue(object : Callback<FourDayForecast.Response> {
                 override fun onResponse(call: Call<FourDayForecast.Response>,
                                         response: Response<FourDayForecast.Response>) {
                     val result = response.body() ?: return // null check
-                    fourDayParser = FourDayParser(currentDate, result)
+                    val fourDayParser = FourDayParser(result)
                 }
 
                 override fun onFailure(call: Call<FourDayForecast.Response>, t: Throwable) {
