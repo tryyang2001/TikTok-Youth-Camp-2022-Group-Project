@@ -51,7 +51,7 @@ class SingaporeMap : Fragment() {
     }
 
     private fun onClick(view : View) {
-        viewModel.txtDate = parser24h.getCurrentDate().format("dd/MM//yyyy")
+        viewModel.txtDate = parser24h.getCurrentDate()
         (activity as MainActivity).txtTemp.text = parser24h.getGeneralAvgTemperature().toString() + DEGREE
         (activity as MainActivity).txtWeatherCondition.text = determineWeatherTextDescription(parser24h.getGeneralForecast())
         var morningForecast : String? = null
@@ -59,6 +59,8 @@ class SingaporeMap : Fragment() {
         var nightForecast : String? = null
         when(view.id) {
             R.id.btnWestZone -> {
+                (activity as MainActivity).txtRegion.text = "West Region"
+                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentWestForecast())
                 morningForecast = parser24h.getMorningWestForecast()
                 afternoonForecast = parser24h.getNoonWestForecast()
                 nightForecast = parser24h.getNightWestForecast()
@@ -66,6 +68,7 @@ class SingaporeMap : Fragment() {
             }
             R.id.btnNorthZone -> {
                 (activity as MainActivity).txtRegion.text = "North Region"
+                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentNorthForecast())
                 morningForecast = parser24h.getMorningNorthForecast()
                 afternoonForecast = parser24h.getNoonNorthForecast()
                 nightForecast = parser24h.getNightNorthForecast()
@@ -73,6 +76,7 @@ class SingaporeMap : Fragment() {
             }
             R.id.btnSouthZone -> {
                 (activity as MainActivity).txtRegion.text = "South Region"
+                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentSouthForecast())
                 morningForecast = parser24h.getMorningSouthForecast()
                 afternoonForecast = parser24h.getNoonSouthForecast()
                 nightForecast = parser24h.getNightSouthForecast()
@@ -80,6 +84,7 @@ class SingaporeMap : Fragment() {
             }
             R.id.btnEastZone -> {
                 (activity as MainActivity).txtRegion.text = "East Region"
+                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentEastForecast())
                 morningForecast = parser24h.getMorningEastForecast()
                 afternoonForecast = parser24h.getNoonEastForecast()
                 nightForecast = parser24h.getNightEastForecast()
@@ -87,17 +92,15 @@ class SingaporeMap : Fragment() {
             }
             R.id.btnCentralZone -> {
                 (activity as MainActivity).txtRegion.text = "Central Region"
+                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentCentralForecast())
                 morningForecast = parser24h.getMorningCentralForecast()
                 afternoonForecast = parser24h.getNoonCentralForecast()
                 nightForecast = parser24h.getNightCentralForecast()
                 Toast.makeText(activity?.applicationContext, "Central Zone", Toast.LENGTH_SHORT).show()
             }
         }
-        println(morningForecast)
-        println(afternoonForecast)
-        println(nightForecast)
         update24HourInfo(morningForecast, afternoonForecast, nightForecast)
-        (activity as MainActivity).btnShowMap.performClick()
+        (activity as MainActivity).btnShowMap.performClick() //to change the fragment display
     }
 
     private fun update24HourInfo(morningForecast : String?, afternoonForecast : String?, nightForecast : String?) {

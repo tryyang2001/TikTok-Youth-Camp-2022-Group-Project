@@ -1,12 +1,18 @@
 package com.example.weatherreport.network.parsers
 
 import com.example.weatherreport.network.types.FourDayForecast
+import java.time.format.DateTimeFormatter
 
 class FourDayParser(res: FourDayForecast.Response): ForecastParser() {
     private val res: FourDayForecast.Response
 
     init {
         this.res = res
+    }
+    
+    override fun getCurrentDate(): String {
+        val formatter = DateTimeFormatter.ofPattern("d/M")
+        return datetime.format(formatter)
     }
 
     fun getGeneralAvgTemperature(day_index: Int): Int {

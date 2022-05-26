@@ -89,13 +89,8 @@ class RegionInformation : Fragment() {
         imgNext2DateCondition.setBackgroundResource(viewModel.imgNext2DateWeatherCondition)
         imgNext3DateCondition.setBackgroundResource(viewModel.imgNext3DateWeatherCondition)
         imgNext4DateCondition.setBackgroundResource(viewModel.imgNext4DateWeatherCondition)
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        //update4DaysWeather()
         createAnimationForWeatherIcons()
+        return view
     }
 
     private fun getTextViewAndImageView(view : View) {
