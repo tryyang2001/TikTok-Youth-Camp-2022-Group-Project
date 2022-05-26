@@ -1,30 +1,22 @@
 package com.example.weatherreport.network.parsers
 
 import com.example.weatherreport.network.types.TwentyFourHourForecast
-import java.time.LocalDate
-import java.time.LocalDateTime
 
-class TwentyFourHourParser(dateTime: LocalDateTime, res: TwentyFourHourForecast.Response) {
-    private val dateTime: LocalDateTime
+class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser() {
     private val res: TwentyFourHourForecast.Response
 
     init {
-        this.dateTime = dateTime
         this.res = res
-    }
-
-    fun getCurrentDate(): String {
-        return dateTime.toLocalDate().toString()
     }
 
     fun getGeneralForecast(): String {
         return res.items[0].general.forecast
     }
 
-    fun getGeneralAvgTemperature(): Double {
+    fun getGeneralAvgTemperature(): Int {
         val low = res.items[0].general.temperature.low
         val high = res.items[0].general.temperature.high
-        return (low + high) / 2.0
+        return (low + high) / 2
     }
 
     fun getMorningWestForecast(): String {

@@ -23,27 +23,21 @@ import com.example.weatherreport.network.WeatherAPI
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
-import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
     private var btnPressed = true
-    val frgRegionInfo = RegionInformation()
-    val frgSingaporeMap = SingaporeMap()
+    lateinit var frgRegionInfo : RegionInformation
+    lateinit var frgSingaporeMap : SingaporeMap
     lateinit var txtAppTitle : TextView
     lateinit var txtRegion : TextView
     lateinit var txtTemp : TextView
     lateinit var txtWeatherCondition : TextView
     lateinit var imgWeatherCondition : ImageView
+    private lateinit var twentyFourHourParser : TwentyFourHourParser
+    private lateinit var fourDayParser: FourDayParser
 
     // API
     private val weatherAPI: WeatherAPI = NetworkModule.weatherAPI
-
-    // 24H parser
-    private var twentyFourHourParser: TwentyFourHourParser? = null
-
-    //4 day parser
-    private var fourDayParser: FourDayParser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +96,8 @@ class MainActivity : AppCompatActivity() {
      * previously selected region will be shown, replacing the map.
      */
     private fun onClickButtonChangeFragmentDisplay() {
+        frgRegionInfo = RegionInformation()
+        frgSingaporeMap = SingaporeMap()
         supportFragmentManager.beginTransaction().add(R.id.fvRegionInfo, frgRegionInfo).commit()
         val btnShowMap = findViewById<Button>(R.id.btnShowMap)
         btnShowMap.setOnClickListener {
@@ -113,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 btnShowMap.text = "Hide Regions"
             } else {
+                println("From MainActivity: " + frgRegionInfo.getTxtDate().text)
                 supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInfo)
                     .commit()
                 btnShowMap.updateLayoutParams<ConstraintLayout.LayoutParams> {
@@ -159,14 +156,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getTwentyFourHourData() {
-        var currentDateTime: LocalDateTime = LocalDateTime.now()
         // Asynchronous network call through enqueue
-        weatherAPI.getTwentyFourHourForecast(currentDateTime)
+        weatherAPI.getTwentyFourHourForecast()
             .enqueue(object : Callback<TwentyFourHourForecast.Response> {
                 override fun onResponse(call: Call<TwentyFourHourForecast.Response>,
                                         response: Response<TwentyFourHourForecast.Response>) {
                     val result = response.body() ?: return // null check
-                    twentyFourHourParser = TwentyFourHourParser(currentDateTime, result)
+                    twentyFourHourParser = TwentyFourHourParser(result)
                 }
 
                 override fun onFailure(call: Call<TwentyFourHourForecast.Response>, t: Throwable) {
@@ -176,15 +172,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFourDayData() {
-        var currentDateTime: LocalDateTime = LocalDateTime.now()
-        var currentDate: LocalDate = LocalDate.now()
         // Asynchronous network call through enqueue
-        weatherAPI.getFourDayForecast(currentDateTime)
+        weatherAPI.getFourDayForecast()
             .enqueue(object : Callback<FourDayForecast.Response> {
                 override fun onResponse(call: Call<FourDayForecast.Response>,
                                         response: Response<FourDayForecast.Response>) {
                     val result = response.body() ?: return // null check
-                    fourDayParser = FourDayParser(currentDate, result)
+                    fourDayParser = FourDayParser(result)
                 }
 
                 override fun onFailure(call: Call<FourDayForecast.Response>, t: Throwable) {
@@ -193,11 +187,11 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    fun getTwentyFourHourParser() : TwentyFourHourParser? {
+    fun getTwentyFourHourParser() : TwentyFourHourParser {
         return twentyFourHourParser
     }
 
-    fun getFourDayParser() : FourDayParser? {
+    fun getFourDayParser() : FourDayParser {
         return fourDayParser
     }
 }

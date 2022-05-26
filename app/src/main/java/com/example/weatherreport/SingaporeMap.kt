@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import com.example.weatherreport.network.parsers.TwentyFourHourParser
 import java.util.Calendar
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,9 +23,8 @@ private const val ARG_PARAM2 = "param2"
 class SingaporeMap : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
-    private val mainActivity = MainActivity()
-    private val frgRegionInformation = mainActivity.frgRegionInfo
-    private val parser24h = mainActivity.getTwentyFourHourParser()
+    private lateinit var frgRegionInformation : RegionInformation
+    private lateinit var parser24h : TwentyFourHourParser
     private val DEGREE = "°"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,14 +38,22 @@ class SingaporeMap : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view : View = inflater.inflate(R.layout.fragment_singapore_map, container, false)
-        setMapButtonOnClickListener(view)
         // Inflate the layout for this fragment
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        frgRegionInformation = (activity as MainActivity).frgRegionInfo
+        parser24h = (activity as MainActivity).getTwentyFourHourParser()
+        setMapButtonOnClickListener(view)
+    }
+
     private fun onClick(view : View) {
-        frgRegionInformation.txtDate.text = parser24h?.getCurrentDate()
-        mainActivity.txtTemp.text = parser24h?.getGeneralAvgTemperature().toString() + DEGREE
+        frgRegionInformation = (activity as MainActivity).frgRegionInfo
+        frgRegionInformation.setTxtDate(parser24h.getCurrentDate())
+        print(frgRegionInformation.getTxtDate().text)
+        (activity as MainActivity).txtTemp.text = parser24h.getGeneralAvgTemperature().toString() + DEGREE
         var morningForecast : String? = null
         var afternoonForecast : String? = null
         var nightForecast : String? = null
@@ -54,64 +62,63 @@ class SingaporeMap : Fragment() {
                 morningForecast = parser24h?.getMorningWestForecast()
                 afternoonForecast = parser24h?.getNoonWestForecast()
                 nightForecast = parser24h?.getNightWestForecast()
-                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
+                Toast.makeText(activity?.applicationContext, "West Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnNorthZone -> {
-                mainActivity.txtRegion.text = "North Region"
-                morningForecast = parser24h?.getMorningNorthForecast()
-                afternoonForecast = parser24h?.getNoonNorthForecast()
-                nightForecast = parser24h?.getNightNorthForecast()
-                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
+                (activity as MainActivity).txtRegion.text = "North Region"
+                morningForecast = parser24h.getMorningNorthForecast()
+                afternoonForecast = parser24h.getNoonNorthForecast()
+                nightForecast = parser24h.getNightNorthForecast()
                 Toast.makeText(activity?.applicationContext, "North Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnSouthZone -> {
-                mainActivity.txtRegion.text = "South Region"
-                morningForecast = parser24h?.getMorningSouthForecast()
-                afternoonForecast = parser24h?.getNoonSouthForecast()
-                nightForecast = parser24h?.getNightSouthForecast()
-                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
+                (activity as MainActivity).txtRegion.text = "South Region"
+                morningForecast = parser24h.getMorningSouthForecast()
+                afternoonForecast = parser24h.getNoonSouthForecast()
+                nightForecast = parser24h.getNightSouthForecast()
                 Toast.makeText(activity?.applicationContext, "North East Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnEastZone -> {
-                mainActivity.txtRegion.text = "East Region"
-                morningForecast = parser24h?.getMorningEastForecast()
-                afternoonForecast = parser24h?.getNoonEastForecast()
-                nightForecast = parser24h?.getNightEastForecast()
-                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
+                (activity as MainActivity).txtRegion.text = "East Region"
+                morningForecast = parser24h.getMorningEastForecast()
+                afternoonForecast = parser24h.getNoonEastForecast()
+                nightForecast = parser24h.getNightEastForecast()
                 Toast.makeText(activity?.applicationContext, "East Zone", Toast.LENGTH_SHORT).show()
             }
             R.id.btnCentralZone -> {
-                mainActivity.txtRegion.text = "Central Region"
-                morningForecast = parser24h?.getMorningCentralForecast()
-                afternoonForecast = parser24h?.getNoonCentralForecast()
-                nightForecast = parser24h?.getNightCentralForecast()
-                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
-                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
+                (activity as MainActivity).txtRegion.text = "Central Region"
+                morningForecast = parser24h.getMorningCentralForecast()
+                afternoonForecast = parser24h.getNoonCentralForecast()
+                nightForecast = parser24h.getNightCentralForecast()
                 Toast.makeText(activity?.applicationContext, "Central Zone", Toast.LENGTH_SHORT).show()
             }
         }
+        println(morningForecast)
+        println(afternoonForecast)
+        println(nightForecast)
         if (morningForecast != null && afternoonForecast != null && nightForecast != null) {
+            println("I am here!")
             update24HourInfo(morningForecast, afternoonForecast, nightForecast)
         }
+        (activity as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInformation)
     }
 
     private fun update24HourInfo(morningForecast : String, afternoonForecast : String, nightForecast : String) {
         determineWeatherIcon(morningForecast, frgRegionInformation.imgMorningWeatherCondition)
         determineWeatherIcon(afternoonForecast, frgRegionInformation.imgAfternoonWeatherCondition)
         determineWeatherIcon(nightForecast, frgRegionInformation.imgNightWeatherCondition)
+        frgRegionInformation.txtMorningWeatherCondition.text = determineWeatherTextDescription(morningForecast)
+        frgRegionInformation.txtAfternoonWeatherCondition.text = determineWeatherTextDescription(afternoonForecast)
+        frgRegionInformation.txtNightWeatherCondition.text = determineWeatherTextDescription(nightForecast)
+    }
+
+    private fun determineWeatherTextDescription(forecast: String) : String? {
+        return parser24h.getForecastCategory(forecast)
     }
 
     private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
-        when (forecast) {
+        println(parser24h.getForecastCategory(forecast))
+        when (parser24h.getForecastCategory(forecast)) {
             "Thundery" -> imageView.setBackgroundResource(R.drawable.thundery)
             "Cloudy" -> imageView.setBackgroundResource(R.drawable.cloudy)
             "Fair" -> {

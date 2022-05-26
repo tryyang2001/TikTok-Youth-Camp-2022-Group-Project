@@ -13,17 +13,14 @@
         android:layout_height="wrap_content"
         android:src="@drawable/singapore_map"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.993" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="24-05-22"
         android:textSize="30sp"
         android:padding="5dp"
         android:textColor="@color/white"
@@ -55,12 +52,12 @@
         app:layout_constraintRight_toRightOf="@id/txtMorning" />
 
     <TextView
-        android:id="@+id/txtMorningTemp"
+        android:id="@+id/txtMorningWeatherCondition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="29°"
+        android:text="Fair"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="@id/txtMorning"
         app:layout_constraintRight_toRightOf="@+id/txtMorning"
         app:layout_constraintTop_toBottomOf="@id/imgMorningWeatherCondition"
@@ -91,12 +88,12 @@
         app:layout_constraintRight_toRightOf="@id/txtAfternoon" />
 
     <TextView
-        android:id="@+id/txtAfternoonTemp"
+        android:id="@+id/txtAfternoonWeatherCondition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="27°"
+        android:text="Thundery"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="@id/txtAfternoon"
         app:layout_constraintRight_toRightOf="@+id/txtAfternoon"
         app:layout_constraintTop_toBottomOf="@id/imgAfternoonWeatherCondition"
@@ -126,12 +123,12 @@
         app:layout_constraintRight_toRightOf="@id/txtNight" />
 
     <TextView
-        android:id="@+id/txtNightTemp"
+        android:id="@+id/txtNightWeatherCondition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="30°"
+        android:text="Cloudy"
         android:textColor="@color/white"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="@id/txtNight"
         app:layout_constraintRight_toRightOf="@+id/txtNight"
         app:layout_constraintTop_toBottomOf="@id/imgNightWeatherCondition"
