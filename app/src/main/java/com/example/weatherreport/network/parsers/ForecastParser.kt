@@ -4,18 +4,19 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 open class ForecastParser {
-    companion object {
-        const val DATE_FORMAT: String = "yyyy-MM-dd"
-    }
-    private val datetime: LocalDateTime = LocalDateTime.now()
+    protected val datetime: LocalDateTime = LocalDateTime.now()
 
-    fun getCurrentDateTime(): String {
+    open fun getCurrentDateTime(): String {
         return datetime.toString()
     }
 
-    fun getCurrentDate(): String {
-        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
+    open fun getCurrentDate(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return datetime.format(formatter)
+    }
+
+    open fun getPeriodIndex(): Int {
+       return datetime.hour / 6
     }
 
     open fun getForecastCategory(forecast: String): String? {
