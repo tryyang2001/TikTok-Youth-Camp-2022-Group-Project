@@ -23,6 +23,8 @@ import com.example.weatherreport.network.WeatherAPI
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDate
+
 
 class MainActivity : AppCompatActivity() {
     private var btnPressed = true
@@ -129,8 +131,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getTwentyFourHourData() {
+        var date: LocalDate = LocalDate.now()
+        var dateMidnightTime: String = date.toString() + "T00:00:00"
         // Asynchronous network call through enqueue
-        weatherAPI.getTwentyFourHourForecast()
+        weatherAPI.getTwentyFourHourForecast(dateMidnightTime)
             .enqueue(object : Callback<TwentyFourHourForecast.Response> {
                 override fun onResponse(call: Call<TwentyFourHourForecast.Response>,
                                         response: Response<TwentyFourHourForecast.Response>) {
@@ -145,8 +149,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFourDayData() {
+        var date: LocalDate = LocalDate.now()
+        var dateMidnightTime: String = date.toString() + "T00:00:00"
         // Asynchronous network call through enqueue
-        weatherAPI.getFourDayForecast()
+        weatherAPI.getFourDayForecast(dateMidnightTime)
             .enqueue(object : Callback<FourDayForecast.Response> {
                 override fun onResponse(call: Call<FourDayForecast.Response>,
                                         response: Response<FourDayForecast.Response>) {
