@@ -7,14 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.weatherreport.network.parsers.FourDayParser
-import com.example.weatherreport.network.types.FourDayForecast
-import java.time.LocalDate
 import android.view.animation.AnimationUtils
 import androidx.core.content.res.ResourcesCompat
 import kotlin.concurrent.thread
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -25,7 +21,6 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class RegionInformation : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     lateinit var txtDate : TextView
@@ -43,9 +38,8 @@ class RegionInformation : Fragment() {
     lateinit var imgNext2DateCondition : ImageView
     lateinit var imgNext3DateCondition : ImageView
     lateinit var imgNext4DateCondition : ImageView
-    val date = LocalDate.now() //TODO: replace with actual date
-    val res = FourDayForecast.Response(,) //TODO: replace with actual response
-    val parser4day = FourDayParser(date, res)
+    private val mainActivity = MainActivity()
+    private val parser4day = mainActivity.getFourDayParser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +48,6 @@ class RegionInformation : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -207,18 +200,26 @@ class RegionInformation : Fragment() {
     }
 
     private fun update4DaysWeather() {
-        txtNext1Date.text = parser4day.getDate(0)
-        txtNext2Date.text = parser4day.getDate(1)
-        txtNext3Date.text = parser4day.getDate(2)
-        txtNext4Date.text = parser4day.getDate(3)
-        val txtNext1DateForecast = parser4day.getGeneralForecast(0)
-        val txtNext2DateForecast = parser4day.getGeneralForecast(1)
-        val txtNext3DateForecast = parser4day.getGeneralForecast(2)
-        val txtNext4DateForecast = parser4day.getGeneralForecast(3)
-        determineWeatherIcon(txtNext1DateForecast, imgNext1DateCondition)
-        determineWeatherIcon(txtNext2DateForecast, imgNext2DateCondition)
-        determineWeatherIcon(txtNext3DateForecast, imgNext3DateCondition)
-        determineWeatherIcon(txtNext4DateForecast, imgNext4DateCondition)
+        txtNext1Date.text = parser4day?.getDate(0)
+        txtNext2Date.text = parser4day?.getDate(1)
+        txtNext3Date.text = parser4day?.getDate(2)
+        txtNext4Date.text = parser4day?.getDate(3)
+        val txtNext1DateForecast = parser4day?.getGeneralForecast(0)
+        val txtNext2DateForecast = parser4day?.getGeneralForecast(1)
+        val txtNext3DateForecast = parser4day?.getGeneralForecast(2)
+        val txtNext4DateForecast = parser4day?.getGeneralForecast(3)
+        if (txtNext1DateForecast != null) {
+            determineWeatherIcon(txtNext1DateForecast, imgNext1DateCondition)
+        }
+        if (txtNext2DateForecast != null) {
+            determineWeatherIcon(txtNext2DateForecast, imgNext2DateCondition)
+        }
+        if (txtNext3DateForecast != null) {
+            determineWeatherIcon(txtNext3DateForecast, imgNext3DateCondition)
+        }
+        if (txtNext4DateForecast != null) {
+            determineWeatherIcon(txtNext4DateForecast, imgNext4DateCondition)
+        }
     }
 
     private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
@@ -230,7 +231,7 @@ class RegionInformation : Fragment() {
         }
     }
 
-    fun getTextViewAndImageView(view : View) {
+    private fun getTextViewAndImageView(view : View) {
         txtDate = view.findViewById(R.id.txtDate)
         txtMorningTemp = view.findViewById(R.id.txtMorningTemp)
         txtAfternoonTemp = view.findViewById(R.id.txtAfternoonTemp)

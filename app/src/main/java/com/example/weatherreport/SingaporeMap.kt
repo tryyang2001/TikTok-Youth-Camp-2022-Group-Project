@@ -8,12 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import com.example.weatherreport.network.parsers.TwentyFourHourParser
-import com.example.weatherreport.network.types.TwentyFourHourForecast
-import java.time.LocalDate
 import java.util.Calendar
 
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -28,9 +24,7 @@ class SingaporeMap : Fragment() {
     private var param2: String? = null
     private val mainActivity = MainActivity()
     private val frgRegionInformation = mainActivity.frgRegionInfo
-    private val date = LocalDate.now() //TODO: replace to real date
-    private val res = TwentyFourHourForecast.Response(, ) //TODO: replace to real response
-    private val parser24h = TwentyFourHourParser(date, res)
+    private val parser24h = mainActivity.getTwentyFourHourParser()
     private val DEGREE = "°"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,23 +44,25 @@ class SingaporeMap : Fragment() {
     }
 
     private fun onClick(view : View) {
-        frgRegionInformation.txtDate.text = parser24h.getCurrentDate()
-        mainActivity.txtTemp.text = parser24h.getGeneralAvgTemperature().toString() + DEGREE
-        var morningForecast = ""
-        var afternoonForecast = ""
-        var nightForecast = ""
+        frgRegionInformation.txtDate.text = parser24h?.getCurrentDate()
+        mainActivity.txtTemp.text = parser24h?.getGeneralAvgTemperature().toString() + DEGREE
+        var morningForecast : String? = null
+        var afternoonForecast : String? = null
+        var nightForecast : String? = null
         when(view.id) {
             R.id.btnWestZone -> {
-                val triple = updateWestZoneInfo(morningForecast, afternoonForecast, nightForecast)
-                afternoonForecast = triple.first
-                morningForecast = triple.second
-                nightForecast = triple.third
+                morningForecast = parser24h?.getMorningWestForecast()
+                afternoonForecast = parser24h?.getNoonWestForecast()
+                nightForecast = parser24h?.getNightWestForecast()
+                frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
+                frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
             }
             R.id.btnNorthZone -> {
                 mainActivity.txtRegion.text = "North Region"
-                morningForecast = parser24h.getMorningNorthForecast()
-                afternoonForecast = parser24h.getNoonNorthForecast()
-                nightForecast = parser24h.getNightNorthForecast()
+                morningForecast = parser24h?.getMorningNorthForecast()
+                afternoonForecast = parser24h?.getNoonNorthForecast()
+                nightForecast = parser24h?.getNightNorthForecast()
                 frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
@@ -74,9 +70,9 @@ class SingaporeMap : Fragment() {
             }
             R.id.btnSouthZone -> {
                 mainActivity.txtRegion.text = "South Region"
-                morningForecast = parser24h.getMorningSouthForecast()
-                afternoonForecast = parser24h.getNoonSouthForecast()
-                nightForecast = parser24h.getNightSouthForecast()
+                morningForecast = parser24h?.getMorningSouthForecast()
+                afternoonForecast = parser24h?.getNoonSouthForecast()
+                nightForecast = parser24h?.getNightSouthForecast()
                 frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
@@ -84,9 +80,9 @@ class SingaporeMap : Fragment() {
             }
             R.id.btnEastZone -> {
                 mainActivity.txtRegion.text = "East Region"
-                morningForecast = parser24h.getMorningEastForecast()
-                afternoonForecast = parser24h.getNoonEastForecast()
-                nightForecast = parser24h.getNightEastForecast()
+                morningForecast = parser24h?.getMorningEastForecast()
+                afternoonForecast = parser24h?.getNoonEastForecast()
+                nightForecast = parser24h?.getNightEastForecast()
                 frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
@@ -94,38 +90,18 @@ class SingaporeMap : Fragment() {
             }
             R.id.btnCentralZone -> {
                 mainActivity.txtRegion.text = "Central Region"
-                morningForecast = parser24h.getMorningCentralForecast()
-                afternoonForecast = parser24h.getNoonCentralForecast()
-                nightForecast = parser24h.getNightCentralForecast()
+                morningForecast = parser24h?.getMorningCentralForecast()
+                afternoonForecast = parser24h?.getNoonCentralForecast()
+                nightForecast = parser24h?.getNightCentralForecast()
                 frgRegionInformation.txtMorningTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtAfternoonTemp.text = "" //TODO: get value of temperature in different periods
                 frgRegionInformation.txtNightTemp.text = "" //TODO: get value of temperature in different periods
                 Toast.makeText(activity?.applicationContext, "Central Zone", Toast.LENGTH_SHORT).show()
             }
         }
-        update24HourInfo(morningForecast, afternoonForecast, nightForecast)
-    }
-
-    private fun updateWestZoneInfo(
-        morningForecast: String,
-        afternoonForecast: String,
-        nightForecast: String
-    ): Triple<String, String, String> {
-        var morningForecast1 = morningForecast
-        var afternoonForecast1 = afternoonForecast
-        var nightForecast1 = nightForecast
-        mainActivity.txtRegion.text = "West Region"
-        morningForecast1 = parser24h.getMorningWestForecast()
-        afternoonForecast1 = parser24h.getNoonWestForecast()
-        nightForecast1 = parser24h.getNightWestForecast()
-        frgRegionInformation.txtMorningTemp.text =
-            "" //TODO: get value of temperature in different periods
-        frgRegionInformation.txtAfternoonTemp.text =
-            "" //TODO: get value of temperature in different periods
-        frgRegionInformation.txtNightTemp.text =
-            "" //TODO: get value of temperature in different periods
-        Toast.makeText(activity?.applicationContext, "West Zone", Toast.LENGTH_SHORT).show()
-        return Triple(afternoonForecast1, morningForecast1, nightForecast1)
+        if (morningForecast != null && afternoonForecast != null && nightForecast != null) {
+            update24HourInfo(morningForecast, afternoonForecast, nightForecast)
+        }
     }
 
     private fun update24HourInfo(morningForecast : String, afternoonForecast : String, nightForecast : String) {

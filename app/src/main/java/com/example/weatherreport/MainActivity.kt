@@ -46,37 +46,53 @@ class MainActivity : AppCompatActivity() {
     private var fourDayParser: FourDayParser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getTwentyFourHourData()
-        getFourDayData()
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        getTwentyFourHourData()
+        getFourDayData()
         selectBackgroundAndTextColors()
         onClickButtonChangeFragmentDisplay()
+        animateWeatherIcons()
+    }
 
+    private fun animateWeatherIcons() {
         val weatherImg = findViewById<ImageView>(R.id.imgWeatherCondition)
 
         //Animation for weather image
-        thread(start=true){
-            if(weatherImg.drawable.constantState== ResourcesCompat.getDrawable(resources, R.drawable.sunny, null)?.constantState){
+        thread(start = true) {
+            if (weatherImg.drawable.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.sunny,
+                    null
+                )?.constantState
+            ) {
                 val rotation = AnimationUtils.loadAnimation(applicationContext, R.anim.rotation)
                 rotation.setFillAfter(true)
                 weatherImg.startAnimation(rotation)
             }
-            if(weatherImg.drawable.constantState==ResourcesCompat.getDrawable(resources, R.drawable.fair_moon, null)?.constantState){
+            if (weatherImg.drawable.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.fair_moon,
+                    null
+                )?.constantState
+            ) {
                 val rocking = AnimationUtils.loadAnimation(applicationContext, R.anim.rocking)
-                rocking.fillAfter=true
-                rocking.fillBefore=true
+                rocking.fillAfter = true
+                rocking.fillBefore = true
                 weatherImg.startAnimation(rocking)
             }
-            if(weatherImg.drawable.constantState==ResourcesCompat.getDrawable(resources, R.drawable.cloudy, null)?.constantState){
+            if (weatherImg.drawable.constantState == ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.cloudy,
+                    null
+                )?.constantState
+            ) {
                 val bouncing = AnimationUtils.loadAnimation(applicationContext, R.anim.bouncing)
-                bouncing.fillAfter=true
-                bouncing.fillBefore=true
+                bouncing.fillAfter = true
+                bouncing.fillBefore = true
                 weatherImg.startAnimation(bouncing)
             }
         }
-
     }
 
     /**
@@ -175,5 +191,13 @@ class MainActivity : AppCompatActivity() {
                     Log.e("MainActivity", "getFourDayData onFailure()", t)
                 }
             })
+    }
+
+    fun getTwentyFourHourParser() : TwentyFourHourParser? {
+        return twentyFourHourParser
+    }
+
+    fun getFourDayParser() : FourDayParser? {
+        return fourDayParser
     }
 }
