@@ -30,7 +30,7 @@ class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser
         return res.items[0].periods[periodIndex].regions.west
     }
 
-    fun getNightEastForecast(): String {
+    fun getCurrentEastForecast(): String {
         val periodIndex = getPeriodIndex()
         return res.items[0].periods[periodIndex].regions.east
     }
@@ -48,6 +48,86 @@ class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser
     fun getCurrentNorthForecast(): String {
         val periodIndex = getPeriodIndex()
         return res.items[0].periods[periodIndex].regions.north
+    }
+
+    fun getNightWestForecast(): String {
+        return res.items[0].periods[0].regions.west
+    }
+
+    fun getNightEastForecast(): String {
+        return res.items[0].periods[0].regions.east
+    }
+
+    fun getNightCentralForecast(): String {
+        return res.items[0].periods[0].regions.central
+    }
+
+    fun getNightSouthForecast(): String {
+        return res.items[0].periods[0].regions.south
+    }
+
+    fun getNightNorthForecast(): String {
+        return res.items[0].periods[0].regions.north
+    }
+
+    fun getMorningWestForecast(): String {
+        return res.items[0].periods[1].regions.west
+    }
+
+    fun getMorningEastForecast(): String {
+        return res.items[0].periods[1].regions.east
+    }
+
+    fun getMorningCentralForecast(): String {
+        return res.items[0].periods[1].regions.central
+    }
+
+    fun getMorningSouthForecast(): String {
+        return res.items[0].periods[1].regions.south
+    }
+
+    fun getMorningNorthForecast(): String {
+        return res.items[0].periods[1].regions.north
+    }
+
+    fun getNoonWestForecast(): String {
+        return res.items[0].periods[2].regions.west
+    }
+
+    fun getNoonEastForecast(): String {
+        return res.items[0].periods[2].regions.east
+    }
+
+    fun getNoonCentralForecast(): String {
+        return res.items[0].periods[2].regions.central
+    }
+
+    fun getNoonSouthForecast(): String {
+        return res.items[0].periods[2].regions.south
+    }
+
+    fun getNoonNorthForecast(): String {
+        return res.items[0].periods[2].regions.north
+    }
+
+    fun getEveningWestForecast(): String {
+        return res.items[0].periods[3].regions.west
+    }
+
+    fun getEveningEastForecast(): String {
+        return res.items[0].periods[3].regions.east
+    }
+
+    fun getEveningCentralForecast(): String {
+        return res.items[0].periods[3].regions.central
+    }
+
+    fun getEveningSouthForecast(): String {
+        return res.items[0].periods[3].regions.south
+    }
+
+    fun getEveningNorthForecast(): String {
+        return res.items[0].periods[3].regions.north
     }
 
     fun isApiHealthy(): Boolean {
