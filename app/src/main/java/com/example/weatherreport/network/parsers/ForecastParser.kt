@@ -19,7 +19,7 @@ open class ForecastParser {
             return "Thundery"
         } else if (forecast.lowercase().contains("cloud")) {
             return "Cloudy"
-        } else if (forecast.lowercase()?.contains("fair")) {
+        } else if (forecast.lowercase().contains("fair")) {
             return "Fair"
         }
         return "Rainy" // assume last category to bring rainy

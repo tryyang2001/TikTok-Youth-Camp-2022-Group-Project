@@ -11,7 +11,7 @@ class RegionInfoViewModel : ViewModel() {
         WeatherCondition("", R.drawable.sunny), // morning
         WeatherCondition("", R.drawable.sunny), // noon
         WeatherCondition("", R.drawable.fair_moon), // evening
-        WeatherCondition("", R.drawable.fair_moon), // nighht
+        WeatherCondition("", R.drawable.fair_moon), // night
     )
     var nextDate: List<NextDate> = listOf(
         NextDate("", R.drawable.sunny, -1, ""), // date 1

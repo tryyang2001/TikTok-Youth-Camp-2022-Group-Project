@@ -12,7 +12,7 @@ interface WeatherApiService {
     // Singleton pattern
     companion object {
         private const val API_URL = "https://api.data.gov.sg/v1/environment/"
-        var weatherApiService: WeatherApiService? = null
+        private var weatherApiService: WeatherApiService? = null
 
         fun getInstance(): WeatherApiService {
             if (weatherApiService == null) {
