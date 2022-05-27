@@ -3,29 +3,20 @@ package com.example.weatherreport
 import androidx.lifecycle.ViewModel
 
 class RegionInfoViewModel : ViewModel() {
-    var txtDate = ""
-    var txtMorningWeatherCondition = ""
-    var txtAfternoonWeatherCondition = ""
-    var txtEveningWeatherCondition = ""
-    var txtNightWeatherCondition = ""
-    var imgMorningWeatherCondition = R.drawable.sunny
-    var imgAfternoonWeatherCondition = R.drawable.sunny
-    var imgEveningWeatherCondition = R.drawable.fair_moon
-    var imgNightWeatherCondition = R.drawable.fair_moon
-    var txtNext1Date = ""
-    var txtNext2Date = ""
-    var txtNext3Date = ""
-    var txtNext4Date = ""
-    var imgNext1DateWeatherCondition = R.drawable.sunny
-    var imgNext1DateTag = -1
-    var imgNext2DateWeatherCondition = R.drawable.sunny
-    var imgNext2DateTag = -1
-    var imgNext3DateWeatherCondition = R.drawable.sunny
-    var imgNext3DateTag = -1
-    var imgNext4DateWeatherCondition = R.drawable.sunny
-    var imgNext4DateTag = -1
-    var txtNext1DateTemp = ""
-    var txtNext2DateTemp = ""
-    var txtNext3DateTemp = ""
-    var txtNext4DateTemp = ""
+    data class WeatherCondition(var txt: String, var img: Int)
+    data class NextDate(var txt: String, var img: Int, var tag: Int, var dateTemp: String)
+
+    var txtDate: String = ""
+    var weatherCondition: List<WeatherCondition> = listOf(
+        WeatherCondition("", R.drawable.sunny), // morning
+        WeatherCondition("", R.drawable.sunny), // noon
+        WeatherCondition("", R.drawable.fair_moon), // evening
+        WeatherCondition("", R.drawable.fair_moon), // nighht
+    )
+    var nextDate: List<NextDate> = listOf(
+        NextDate("", R.drawable.sunny, -1, ""), // date 1
+        NextDate("", R.drawable.sunny, -1, ""), // date 2
+        NextDate("", R.drawable.sunny, -1, ""), // date 3
+        NextDate("", R.drawable.sunny, -1, ""), // date 4
+    )
 }

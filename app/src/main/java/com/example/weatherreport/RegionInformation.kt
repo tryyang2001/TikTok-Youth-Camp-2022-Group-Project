@@ -91,30 +91,30 @@ class RegionInformation : Fragment() {
      */
     fun renderingUiFromViewModel() {
         txtDate.text = viewModel.txtDate
-        txtMorningWeatherCondition.text = viewModel.txtMorningWeatherCondition
-        txtAfternoonWeatherCondition.text = viewModel.txtAfternoonWeatherCondition
-        txtEveningWeatherCondition.text = viewModel.txtEveningWeatherCondition
-        txtNightWeatherCondition.text = viewModel.txtNightWeatherCondition
-        determineWeatherIcon(viewModel.txtMorningWeatherCondition, imgMorningWeatherCondition)
-        determineWeatherIcon(viewModel.txtAfternoonWeatherCondition, imgAfternoonWeatherCondition)
-        determineWeatherIcon(viewModel.txtEveningWeatherCondition, imgEveningWeatherCondition, true)
-        determineWeatherIcon(viewModel.txtNightWeatherCondition, imgNightWeatherCondition, true)
-        txtNext1Date.text = viewModel.txtNext1Date
-        txtNext2Date.text = viewModel.txtNext2Date
-        txtNext3Date.text = viewModel.txtNext3Date
-        txtNext4Date.text = viewModel.txtNext4Date
-        imgNext1DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext1DateWeatherCondition, null))
-        imgNext1DateCondition.tag = viewModel.imgNext1DateTag
-        imgNext2DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext2DateWeatherCondition, null))
-        imgNext2DateCondition.tag = viewModel.imgNext2DateTag
-        imgNext3DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext3DateWeatherCondition, null))
-        imgNext3DateCondition.tag = viewModel.imgNext3DateTag
-        imgNext4DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext4DateWeatherCondition, null))
-        imgNext4DateCondition.tag = viewModel.imgNext4DateTag
-        txtNext1DateTemp.text = viewModel.txtNext1DateTemp
-        txtNext2DateTemp.text = viewModel.txtNext2DateTemp
-        txtNext3DateTemp.text = viewModel.txtNext3DateTemp
-        txtNext4DateTemp.text = viewModel.txtNext4DateTemp
+        txtMorningWeatherCondition.text = viewModel.weatherCondition[0].txt
+        txtAfternoonWeatherCondition.text = viewModel.weatherCondition[1].txt
+        txtEveningWeatherCondition.text = viewModel.weatherCondition[2].txt
+        txtNightWeatherCondition.text = viewModel.weatherCondition[3].txt
+        determineWeatherIcon(viewModel.weatherCondition[0].txt, imgMorningWeatherCondition)
+        determineWeatherIcon(viewModel.weatherCondition[1].txt, imgAfternoonWeatherCondition)
+        determineWeatherIcon(viewModel.weatherCondition[2].txt, imgEveningWeatherCondition, true)
+        determineWeatherIcon(viewModel.weatherCondition[3].txt, imgNightWeatherCondition, true)
+        txtNext1Date.text = viewModel.nextDate[0].txt
+        txtNext2Date.text = viewModel.nextDate[1].txt
+        txtNext3Date.text = viewModel.nextDate[2].txt
+        txtNext4Date.text = viewModel.nextDate[3].txt
+        imgNext1DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.nextDate[0].img, null))
+        imgNext1DateCondition.tag = viewModel.nextDate[0].tag
+        imgNext2DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.nextDate[1].img, null))
+        imgNext2DateCondition.tag = viewModel.nextDate[1].tag
+        imgNext3DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.nextDate[2].img, null))
+        imgNext3DateCondition.tag = viewModel.nextDate[2].tag
+        imgNext4DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.nextDate[3].img, null))
+        imgNext4DateCondition.tag = viewModel.nextDate[3].tag
+        txtNext1DateTemp.text = viewModel.nextDate[0].dateTemp
+        txtNext2DateTemp.text = viewModel.nextDate[1].dateTemp
+        txtNext3DateTemp.text = viewModel.nextDate[2].dateTemp
+        txtNext4DateTemp.text = viewModel.nextDate[3].dateTemp
     }
 
     /*********************************

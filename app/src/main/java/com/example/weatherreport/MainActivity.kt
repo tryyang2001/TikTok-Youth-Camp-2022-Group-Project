@@ -203,10 +203,10 @@ class MainActivity : AppCompatActivity() {
         val noonEastForecast = twentyFourHourParser.getForecast(ForecastParser.Period.NOON, ForecastParser.Region.EAST)
         val eveningEastForecast = twentyFourHourParser.getForecast(ForecastParser.Period.EVENING, ForecastParser.Region.EAST)
         val nightEastForecast = twentyFourHourParser.getForecast(ForecastParser.Period.NIGHT, ForecastParser.Region.EAST)
-        viewModel.txtMorningWeatherCondition = twentyFourHourParser.getForecastCategory(morningEastForecast)
-        viewModel.txtAfternoonWeatherCondition = twentyFourHourParser.getForecastCategory(noonEastForecast)
-        viewModel.txtEveningWeatherCondition = twentyFourHourParser.getForecastCategory(eveningEastForecast)
-        viewModel.txtNightWeatherCondition = twentyFourHourParser.getForecastCategory(nightEastForecast)
+        viewModel.weatherCondition[0].txt = twentyFourHourParser.getForecastCategory(morningEastForecast)
+        viewModel.weatherCondition[1].txt = twentyFourHourParser.getForecastCategory(noonEastForecast)
+        viewModel.weatherCondition[2].txt = twentyFourHourParser.getForecastCategory(eveningEastForecast)
+        viewModel.weatherCondition[3].txt = twentyFourHourParser.getForecastCategory(nightEastForecast)
         determineMorningWeatherIcon(morningEastForecast)
         determineAfternoonWeatherIcon(noonEastForecast)
         determineEveningWeatherIcon(eveningEastForecast)
@@ -219,26 +219,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateFourDayUi(fourDayParser: FourDayParser) {
-        viewModel.txtNext1Date = fourDayParser.getRelativeDate(0)
-        viewModel.txtNext2Date = fourDayParser.getRelativeDate(1)
-        viewModel.txtNext3Date = fourDayParser.getRelativeDate(2)
-        viewModel.txtNext4Date = fourDayParser.getRelativeDate(3)
-        viewModel.imgNext1DateWeatherCondition =
+        viewModel.nextDate[0].txt = fourDayParser.getRelativeDate(0)
+        viewModel.nextDate[1].txt = fourDayParser.getRelativeDate(1)
+        viewModel.nextDate[2].txt = fourDayParser.getRelativeDate(2)
+        viewModel.nextDate[3].txt = fourDayParser.getRelativeDate(3)
+        viewModel.nextDate[0].img =
             determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(0))
-        viewModel.imgNext1DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(0))
-        viewModel.txtNext1DateTemp = fourDayParser.getGeneralAvgTemperature(0).toString() + DEGREE
-        viewModel.imgNext2DateWeatherCondition =
+        viewModel.nextDate[0].tag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(0))
+        viewModel.nextDate[0].dateTemp = fourDayParser.getGeneralAvgTemperature(0).toString() + DEGREE
+        viewModel.nextDate[1].img =
             determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(1))
-        viewModel.imgNext2DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(1))
-        viewModel.txtNext2DateTemp = fourDayParser.getGeneralAvgTemperature(1).toString() + DEGREE
-        viewModel.imgNext3DateWeatherCondition =
+        viewModel.nextDate[1].tag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(1))
+        viewModel.nextDate[1].dateTemp = fourDayParser.getGeneralAvgTemperature(1).toString() + DEGREE
+        viewModel.nextDate[2].img =
             determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(2))
-        viewModel.imgNext3DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(2))
-        viewModel.txtNext3DateTemp = fourDayParser.getGeneralAvgTemperature(2).toString() + DEGREE
-        viewModel.imgNext4DateWeatherCondition =
+        viewModel.nextDate[2].tag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(2))
+        viewModel.nextDate[2].dateTemp = fourDayParser.getGeneralAvgTemperature(2).toString() + DEGREE
+        viewModel.nextDate[3].img =
             determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(3))
-        viewModel.imgNext4DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(3))
-        viewModel.txtNext4DateTemp = fourDayParser.getGeneralAvgTemperature(3).toString() + DEGREE
+        viewModel.nextDate[3].tag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(3))
+        viewModel.nextDate[3].dateTemp = fourDayParser.getGeneralAvgTemperature(3).toString() + DEGREE
         frgRegionInfo.renderingUiFromViewModel()
         frgRegionInfo.createAnimationForWeatherIcons() //create animation for fragment
         supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInfo).commitAllowingStateLoss()
@@ -324,10 +324,10 @@ class MainActivity : AppCompatActivity() {
      */
     private fun determineMorningWeatherIcon(forecast: String) {
         when (twentyFourHourParser.getForecastCategory(forecast)) {
-            "Thundery" -> viewModel.imgMorningWeatherCondition = R.drawable.thundery
-            "Rainy" -> viewModel.imgMorningWeatherCondition = R.drawable.rainy
-            "Fair" -> viewModel.imgMorningWeatherCondition = R.drawable.sunny
-            "Cloudy" -> viewModel.imgMorningWeatherCondition = R.drawable.cloudy
+            "Thundery" -> viewModel.weatherCondition[0].img = R.drawable.thundery
+            "Rainy" -> viewModel.weatherCondition[0].img = R.drawable.rainy
+            "Fair" -> viewModel.weatherCondition[0].img = R.drawable.sunny
+            "Cloudy" -> viewModel.weatherCondition[0].img = R.drawable.cloudy
         }
     }
 
@@ -336,10 +336,10 @@ class MainActivity : AppCompatActivity() {
      */
     private fun determineAfternoonWeatherIcon(forecast: String) {
         when (twentyFourHourParser.getForecastCategory(forecast)) {
-            "Thundery" -> viewModel.imgAfternoonWeatherCondition = R.drawable.thundery
-            "Rainy" -> viewModel.imgAfternoonWeatherCondition = R.drawable.rainy
-            "Fair" -> viewModel.imgAfternoonWeatherCondition = R.drawable.sunny
-            "Cloudy" -> viewModel.imgAfternoonWeatherCondition = R.drawable.cloudy
+            "Thundery" -> viewModel.weatherCondition[1].img = R.drawable.thundery
+            "Rainy" -> viewModel.weatherCondition[1].img = R.drawable.rainy
+            "Fair" -> viewModel.weatherCondition[1].img = R.drawable.sunny
+            "Cloudy" -> viewModel.weatherCondition[1].img = R.drawable.cloudy
         }
     }
 
@@ -348,10 +348,10 @@ class MainActivity : AppCompatActivity() {
      */
     private fun determineEveningWeatherIcon(forecast: String) {
         when (twentyFourHourParser.getForecastCategory(forecast)) {
-            "Thundery" -> viewModel.imgEveningWeatherCondition = R.drawable.thundery
-            "Rainy" -> viewModel.imgEveningWeatherCondition = R.drawable.rainy
-            "Fair" -> viewModel.imgEveningWeatherCondition = R.drawable.fair_moon
-            "Cloudy" -> viewModel.imgEveningWeatherCondition = R.drawable.cloudy
+            "Thundery" -> viewModel.weatherCondition[2].img = R.drawable.thundery
+            "Rainy" -> viewModel.weatherCondition[2].img = R.drawable.rainy
+            "Fair" -> viewModel.weatherCondition[2].img = R.drawable.fair_moon
+            "Cloudy" -> viewModel.weatherCondition[2].img = R.drawable.cloudy
         }
     }
 
@@ -360,10 +360,10 @@ class MainActivity : AppCompatActivity() {
      */
     private fun determineNightWeatherIcon(forecast: String) {
         when (twentyFourHourParser.getForecastCategory(forecast)) {
-            "Thundery" -> viewModel.imgNightWeatherCondition = R.drawable.thundery
-            "Rainy" -> viewModel.imgNightWeatherCondition = R.drawable.rainy
-            "Fair" -> viewModel.imgNightWeatherCondition = R.drawable.fair_moon
-            "Cloudy" -> viewModel.imgNightWeatherCondition = R.drawable.cloudy
+            "Thundery" -> viewModel.weatherCondition[3].img = R.drawable.thundery
+            "Rainy" -> viewModel.weatherCondition[3].img = R.drawable.rainy
+            "Fair" -> viewModel.weatherCondition[3].img = R.drawable.fair_moon
+            "Cloudy" -> viewModel.weatherCondition[3].img = R.drawable.cloudy
         }
     }
 }

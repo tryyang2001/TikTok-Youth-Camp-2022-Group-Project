@@ -211,14 +211,14 @@ class SingaporeMap : Fragment() {
         eveningForecast: String?,
         nightForecast: String?
     ) {
-        viewModel.imgMorningWeatherCondition = determineWeatherIconId(morningForecast)
-        viewModel.imgAfternoonWeatherCondition = determineWeatherIconId(afternoonForecast)
-        viewModel.imgEveningWeatherCondition = determineWeatherIconId(eveningForecast)
-        viewModel.imgNightWeatherCondition = determineWeatherIconIdForNight(nightForecast)
-        viewModel.txtMorningWeatherCondition = determineWeatherTextDescription(morningForecast)
-        viewModel.txtAfternoonWeatherCondition = determineWeatherTextDescription(afternoonForecast)
-        viewModel.txtEveningWeatherCondition = determineWeatherTextDescription(eveningForecast)
-        viewModel.txtNightWeatherCondition = determineWeatherTextDescription(nightForecast)
+        viewModel.weatherCondition[0].img = determineWeatherIconId(morningForecast)
+        viewModel.weatherCondition[1].img = determineWeatherIconId(afternoonForecast)
+        viewModel.weatherCondition[2].img = determineWeatherIconId(eveningForecast)
+        viewModel.weatherCondition[3].img = determineWeatherIconIdForNight(nightForecast)
+        viewModel.weatherCondition[0].txt = determineWeatherTextDescription(morningForecast)
+        viewModel.weatherCondition[1].txt = determineWeatherTextDescription(afternoonForecast)
+        viewModel.weatherCondition[2].txt = determineWeatherTextDescription(eveningForecast)
+        viewModel.weatherCondition[3].txt = determineWeatherTextDescription(nightForecast)
     }
 
     /**
