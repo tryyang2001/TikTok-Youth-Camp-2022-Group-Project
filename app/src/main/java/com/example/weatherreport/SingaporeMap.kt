@@ -1,36 +1,32 @@
 package com.example.weatherreport
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherreport.network.parsers.ForecastParser
 import com.example.weatherreport.network.parsers.TwentyFourHourParser
 import java.util.*
 
 class SingaporeMap : Fragment() {
+    enum class ForecastType { THUNDERY, RAINY, FAIR_MOON, FAIR_SUN, CLOUDY }
+    companion object {
+        private const val DEGREE = "°"
+    }
     private lateinit var parser24h: TwentyFourHourParser
-    private val DEGREE = "°"
     private lateinit var viewModel: RegionInfoViewModel
-    private val THUNDERY = 0
-    private val RAINY = 1
-    private val FAIR_MOON = 2
-    private val FAIR_SUN = 3
-    private val CLOUDY = 4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(RegionInfoViewModel::class.java)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_singapore_map, container, false)
     }
@@ -46,14 +42,18 @@ class SingaporeMap : Fragment() {
      */
     private fun setMapButtonOnClickListener(view: View) {
         val btnWest = view.findViewById<Button>(R.id.btnWestZone)
-        val btnNorth = view.findViewById<Button>(R.id.btnNorthZone)
-        val btnSouth = view.findViewById<Button>(R.id.btnSouthZone)
-        val btnEast = view.findViewById<Button>(R.id.btnEastZone)
-        val btnCentral = view.findViewById<Button>(R.id.btnCentralZone)
         btnWest.setOnClickListener { this.onClick(btnWest) }
+
+        val btnNorth = view.findViewById<Button>(R.id.btnNorthZone)
         btnNorth.setOnClickListener { this.onClick(btnNorth) }
+
+        val btnSouth = view.findViewById<Button>(R.id.btnSouthZone)
         btnSouth.setOnClickListener { this.onClick(btnSouth) }
+
+        val btnEast = view.findViewById<Button>(R.id.btnEastZone)
         btnEast.setOnClickListener { this.onClick(btnEast) }
+
+        val btnCentral = view.findViewById<Button>(R.id.btnCentralZone)
         btnCentral.setOnClickListener { this.onClick(btnCentral) }
     }
 
@@ -205,19 +205,20 @@ class SingaporeMap : Fragment() {
      * Helper function to update the morning, afternoon, evening and night weather information
      * of the view model so that the information can be passed to the other fragment.
      */
-    private fun updateViewModelPeriodicWeatherCondition(
-        morningForecast: String?,
-        afternoonForecast: String?,
-        eveningForecast: String?,
-        nightForecast: String?
-    ) {
+    private fun updateViewModelPeriodicWeatherCondition(morningForecast: String?,
+                                                        afternoonForecast: String?,
+                                                        eveningForecast: String?,
+                                                        nightForecast: String?) {
         viewModel.weatherCondition[0].img = determineWeatherIconId(morningForecast)
-        viewModel.weatherCondition[1].img = determineWeatherIconId(afternoonForecast)
-        viewModel.weatherCondition[2].img = determineWeatherIconId(eveningForecast)
-        viewModel.weatherCondition[3].img = determineWeatherIconIdForNight(nightForecast)
         viewModel.weatherCondition[0].txt = determineWeatherTextDescription(morningForecast)
+
+        viewModel.weatherCondition[1].img = determineWeatherIconId(afternoonForecast)
         viewModel.weatherCondition[1].txt = determineWeatherTextDescription(afternoonForecast)
+
+        viewModel.weatherCondition[2].img = determineWeatherIconId(eveningForecast)
         viewModel.weatherCondition[2].txt = determineWeatherTextDescription(eveningForecast)
+
+        viewModel.weatherCondition[3].img = determineWeatherIconIdForNight(nightForecast)
         viewModel.weatherCondition[3].txt = determineWeatherTextDescription(nightForecast)
     }
 
@@ -233,16 +234,16 @@ class SingaporeMap : Fragment() {
      */
     private fun determineWeatherIconTag(forecast: String) : Int {
         when (parser24h.getForecastCategory(forecast)) {
-            "Thundery" -> return THUNDERY
-            "Rainy" -> return RAINY
+            "Thundery" -> return ForecastType.THUNDERY.ordinal
+            "Rainy" -> return ForecastType.RAINY.ordinal
             "Fair" -> {
                 val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
                 if (currTime >= 18 || currTime <= 6) {
-                    return FAIR_MOON
+                    return ForecastType.FAIR_MOON.ordinal
                 }
-                return FAIR_SUN
+                return ForecastType.FAIR_SUN.ordinal
             }
-            "CLOUDY" -> return CLOUDY
+            "CLOUDY" -> return ForecastType.CLOUDY.ordinal
             }
         return -1
     }
