@@ -1,5 +1,12 @@
 <resources>
-    <string name="app_name">Weather Report</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Weather SG</string>
+    <string name="show_regions">Show Regions</string>
+    <string name="hide_regions">Hide Regions</string>
+    <string name="country_name">Singapore</string>
+    <string name="west_region">West Region</string>
+    <string name="north_region">North Region</string>
+    <string name="south_region">South Region</string>
+    <string name="east_region">East Region</string>
+    <string name="central_region">Central Region</string>
+
 </resources>

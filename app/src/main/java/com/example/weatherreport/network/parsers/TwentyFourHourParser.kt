@@ -19,10 +19,10 @@ class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser
         return res.items[0].general.forecast
     }
 
-    fun getGeneralAvgTemperature(): Double {
+    fun getGeneralAvgTemperature(): Int {
         val low = res.items[0].general.temperature.low
         val high = res.items[0].general.temperature.high
-        return (low + high) / 2.0
+        return (low + high) / 2
     }
 
     fun getCurrentWestForecast(): String {
