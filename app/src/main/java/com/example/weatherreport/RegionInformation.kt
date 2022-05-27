@@ -97,8 +97,8 @@ class RegionInformation : Fragment() {
         txtNightWeatherCondition.text = viewModel.txtNightWeatherCondition
         determineWeatherIcon(viewModel.txtMorningWeatherCondition, imgMorningWeatherCondition)
         determineWeatherIcon(viewModel.txtAfternoonWeatherCondition, imgAfternoonWeatherCondition)
-        determineWeatherIcon(viewModel.txtEveningWeatherCondition, imgEveningWeatherCondition)
-        determineWeatherIcon(viewModel.txtNightWeatherCondition, imgNightWeatherCondition)
+        determineWeatherIcon(viewModel.txtEveningWeatherCondition, imgEveningWeatherCondition, true)
+        determineWeatherIcon(viewModel.txtNightWeatherCondition, imgNightWeatherCondition, true)
         txtNext1Date.text = viewModel.txtNext1Date
         txtNext2Date.text = viewModel.txtNext2Date
         txtNext3Date.text = viewModel.txtNext3Date
@@ -130,13 +130,18 @@ class RegionInformation : Fragment() {
         val bouncing = AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.bouncing)
         bouncing.fillAfter = true
         bouncing.fillBefore = true
-
+        val drifting = AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.drifting)
+        drifting.fillAfter = true
+        drifting.fillBefore = true
         thread(start = true) {
             if (imgMorningWeatherCondition.tag == FAIR_SUN) {
                 imgMorningWeatherCondition.startAnimation(rotation)
             }
             else if (imgMorningWeatherCondition.tag == CLOUDY) {
                 imgMorningWeatherCondition.startAnimation(bouncing)
+            }
+            else if (imgMorningWeatherCondition.tag == RAINY || imgMorningWeatherCondition.tag == THUNDERY) {
+                imgMorningWeatherCondition.startAnimation(drifting)
             }
         }
         thread(start = true) {
@@ -145,6 +150,9 @@ class RegionInformation : Fragment() {
             }
             else if (imgAfternoonWeatherCondition.tag == CLOUDY) {
                 imgAfternoonWeatherCondition.startAnimation(bouncing)
+            }
+            else if (imgAfternoonWeatherCondition.tag == RAINY || imgAfternoonWeatherCondition.tag == THUNDERY) {
+                imgAfternoonWeatherCondition.startAnimation(drifting)
             }
         }
         thread(start = true) {
@@ -157,6 +165,9 @@ class RegionInformation : Fragment() {
             else if (imgEveningWeatherCondition.tag == CLOUDY) {
                 imgEveningWeatherCondition.startAnimation(bouncing)
             }
+            else if (imgEveningWeatherCondition.tag == RAINY || imgEveningWeatherCondition.tag == THUNDERY) {
+                imgEveningWeatherCondition.startAnimation(drifting)
+            }
         }
         thread(start = true) {
             if (imgNightWeatherCondition.tag == FAIR_MOON) {
@@ -164,6 +175,9 @@ class RegionInformation : Fragment() {
             }
             else if (imgNightWeatherCondition.tag == CLOUDY) {
                 imgNightWeatherCondition.startAnimation(bouncing)
+            }
+            else if (imgNightWeatherCondition.tag == RAINY || imgNightWeatherCondition.tag == THUNDERY) {
+                imgNightWeatherCondition.startAnimation(drifting)
             }
         }
         thread(start = true) {
@@ -173,6 +187,9 @@ class RegionInformation : Fragment() {
             else if (imgNext1DateCondition.tag == CLOUDY) {
                 imgNext1DateCondition.startAnimation(bouncing)
             }
+            else if (imgNext1DateCondition.tag == RAINY || imgNext1DateCondition.tag == THUNDERY) {
+                imgNext1DateCondition.startAnimation(drifting)
+            }
         }
         thread(start = true) {
             if (imgNext2DateCondition.tag == FAIR_SUN) {
@@ -180,6 +197,9 @@ class RegionInformation : Fragment() {
             }
             else if (imgNext2DateCondition.tag == CLOUDY) {
                 imgNext2DateCondition.startAnimation(bouncing)
+            }
+            else if (imgNext2DateCondition.tag == RAINY || imgNext2DateCondition.tag == THUNDERY) {
+                imgNext2DateCondition.startAnimation(drifting)
             }
         }
         thread(start = true) {
@@ -189,6 +209,9 @@ class RegionInformation : Fragment() {
             else if (imgNext3DateCondition.tag == CLOUDY) {
                 imgNext3DateCondition.startAnimation(bouncing)
             }
+            else if (imgNext3DateCondition.tag == RAINY || imgNext3DateCondition.tag == THUNDERY) {
+                imgNext3DateCondition.startAnimation(drifting)
+            }
         }
         thread(start = true) {
             if (imgNext4DateCondition.tag == FAIR_SUN) {
@@ -196,6 +219,9 @@ class RegionInformation : Fragment() {
             }
             else if (imgNext4DateCondition.tag == CLOUDY) {
                 imgNext4DateCondition.startAnimation(bouncing)
+            }
+            else if (imgNext4DateCondition.tag == RAINY || imgNext4DateCondition.tag == THUNDERY) {
+                imgNext4DateCondition.startAnimation(drifting)
             }
         }
     }
@@ -207,7 +233,7 @@ class RegionInformation : Fragment() {
     /**
      * Helper function to update image drawable and its tag.
      */
-    private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
+    private fun determineWeatherIcon(forecast: String, imageView : ImageView, isNight: Boolean? =false) {
         when (forecast) {
             "Thundery" -> {
                 imageView.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, R.drawable.thundery, null))
@@ -218,8 +244,7 @@ class RegionInformation : Fragment() {
                 imageView.tag = CLOUDY
             }
             "Fair" -> {
-                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                if (currTime >= 18 || currTime <= 6) {
+                if (isNight == true) {
                     imageView.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, R.drawable.fair_moon, null))
                     imageView.tag = FAIR_MOON
                 } else {

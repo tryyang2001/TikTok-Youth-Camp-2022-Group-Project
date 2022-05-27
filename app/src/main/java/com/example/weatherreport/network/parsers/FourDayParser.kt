@@ -3,6 +3,8 @@ package com.example.weatherreport.network.parsers
 import com.example.weatherreport.network.types.FourDayForecast
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 class FourDayParser(res: FourDayForecast.Response): ForecastParser() {
     private val res: FourDayForecast.Response
@@ -19,7 +21,7 @@ class FourDayParser(res: FourDayForecast.Response): ForecastParser() {
     fun getGeneralAvgTemperature(day_index: Int): Int {
         val low = res.items[0].forecasts[day_index].temperature.low
         val high = res.items[0].forecasts[day_index].temperature.high
-        return (low + high) / 2
+        return ((low + high) / 2.0).roundToInt()
     }
 
     fun getRelativeDate(day_index: Int): String {

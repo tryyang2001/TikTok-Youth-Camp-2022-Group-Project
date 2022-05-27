@@ -1,7 +1,9 @@
 package com.example.weatherreport.network.parsers
 
 import com.example.weatherreport.network.types.TwentyFourHourForecast
+import java.lang.Math.round
 import java.time.format.DateTimeFormatter
+import kotlin.math.roundToInt
 
 class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser() {
     private val res: TwentyFourHourForecast.Response
@@ -22,7 +24,7 @@ class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser
     fun getGeneralAvgTemperature(): Int {
         val low = res.items[0].general.temperature.low
         val high = res.items[0].general.temperature.high
-        return (low + high) / 2
+        return ((low + high) / 2.0).roundToInt()
     }
 
     fun getCurrentWestForecast(): String {
