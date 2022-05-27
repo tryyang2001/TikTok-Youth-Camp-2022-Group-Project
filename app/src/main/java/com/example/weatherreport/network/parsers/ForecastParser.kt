@@ -6,10 +6,6 @@ import java.time.format.DateTimeFormatter
 open class ForecastParser {
     protected val datetime: LocalDateTime = LocalDateTime.now()
 
-    open fun getCurrentDateTime(): String {
-        return datetime.toString()
-    }
-
     open fun getCurrentDate(): String {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return datetime.format(formatter)

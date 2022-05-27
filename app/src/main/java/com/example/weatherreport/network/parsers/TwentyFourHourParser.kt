@@ -1,7 +1,6 @@
 package com.example.weatherreport.network.parsers
 
 import com.example.weatherreport.network.types.TwentyFourHourForecast
-import java.lang.Math.round
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -130,9 +129,5 @@ class TwentyFourHourParser(res: TwentyFourHourForecast.Response): ForecastParser
 
     fun getEveningNorthForecast(): String {
         return res.items[0].periods[3].regions.north
-    }
-
-    fun isApiHealthy(): Boolean {
-        return res.api_info.status == "healthy"
     }
 }
