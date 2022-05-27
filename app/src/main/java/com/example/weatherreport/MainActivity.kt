@@ -152,17 +152,23 @@ class MainActivity : AppCompatActivity() {
                 rotation.fillAfter = true
                 imgWeatherCondition.startAnimation(rotation)
             }
-            if (imgWeatherCondition.tag == FAIR_MOON) {
+            else if (imgWeatherCondition.tag == FAIR_MOON) {
                 val rocking = AnimationUtils.loadAnimation(applicationContext, R.anim.rocking)
                 rocking.fillAfter = true
                 rocking.fillBefore = true
                 imgWeatherCondition.startAnimation(rocking)
             }
-            if (imgWeatherCondition.tag == CLOUDY) {
+            else if (imgWeatherCondition.tag == CLOUDY) {
                 val bouncing = AnimationUtils.loadAnimation(applicationContext, R.anim.bouncing)
                 bouncing.fillAfter = true
                 bouncing.fillBefore = true
                 imgWeatherCondition.startAnimation(bouncing)
+            }
+            else if (imgWeatherCondition.tag == RAINY || imgWeatherCondition.tag == THUNDERY) {
+                val drifting = AnimationUtils.loadAnimation(applicationContext, R.anim.drifting)
+                drifting.fillAfter = true
+                drifting.fillBefore = true
+                imgWeatherCondition.startAnimation(drifting)
             }
         }
     }
@@ -315,14 +321,8 @@ class MainActivity : AppCompatActivity() {
         when (fourDayParser.getForecastCategory(forecast)) {
             "Thundery" -> return THUNDERY
             "Rainy" -> return RAINY
-            "Fair" -> {
-                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                if (currTime >= 17 || currTime <= 6) {
-                    return FAIR_MOON
-                }
-                return FAIR_SUN
-            }
-            "Cloudy" -> CLOUDY
+            "Fair" ->return FAIR_SUN //no moon for next 4 days forecast
+            "Cloudy" -> return CLOUDY
         }
         return -1
     }
@@ -334,13 +334,7 @@ class MainActivity : AppCompatActivity() {
         when (fourDayParser.getForecastCategory(forecast)) {
             "Thundery" -> return R.drawable.thundery
             "Rainy" -> return R.drawable.rainy
-            "Fair" -> {
-                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                if (currTime >= 18 || currTime <= 6) {
-                    return R.drawable.fair_moon
-                }
-                return R.drawable.sunny
-            }
+            "Fair" -> return R.drawable.sunny //no moon for next 4 days forecast
             "Cloudy" -> return R.drawable.cloudy
         }
         return 0
