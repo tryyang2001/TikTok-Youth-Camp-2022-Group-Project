@@ -3,7 +3,6 @@ package com.example.weatherreport
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
@@ -19,13 +18,11 @@ import com.example.weatherreport.network.types.FourDayForecast
 import com.example.weatherreport.network.types.TwentyFourHourForecast
 import com.example.weatherreport.network.parsers.FourDayParser
 import com.example.weatherreport.network.parsers.TwentyFourHourParser
-import com.example.weatherreport.network.NetworkModule
-import com.example.weatherreport.network.WeatherAPI
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.example.weatherreport.network.WeatherApiService
 import java.time.LocalDate
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private var btnPressed = true
@@ -47,9 +44,6 @@ class MainActivity : AppCompatActivity() {
     private val FAIR_SUN = 3
     private val CLOUDY = 4
 
-    // API
-    private val weatherAPI: WeatherAPI = NetworkModule.weatherAPI
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -67,12 +61,21 @@ class MainActivity : AppCompatActivity() {
         frgSingaporeMap = SingaporeMap()
         viewModel = ViewModelProvider(this).get(RegionInfoViewModel::class.java)
         btnShowMap = findViewById(R.id.btnShowMap)
-        initializeParserAPI()
+        fetchApiData()
     }
 
-    private fun initializeParserAPI() {
-        getTwentyFourHourData()
-        getFourDayData()
+    private fun fetchApiData() {
+        GlobalScope.launch(Dispatchers.Main) {
+            val dateTime: String = LocalDate.now().toString() + "T00:00:00"
+
+            val twentyFourHourRes = WeatherApiService.getInstance().getTwentyFourHourForecast(dateTime)
+            val twentyFourHourResBody = twentyFourHourRes.body()!!
+
+            val fourDayRes = WeatherApiService.getInstance().getFourDayForecast()
+            val fourDayResBody = fourDayRes.body()!!
+
+            uiRefreshCallback(twentyFourHourResBody, fourDayResBody)
+        }
     }
 
     /**
@@ -177,93 +180,70 @@ class MainActivity : AppCompatActivity() {
      * API related functions          *
      **********************************/
 
-    private fun getTwentyFourHourData() {
-        val date: LocalDate = LocalDate.now()
-        val dateMidnightTime: String = date.toString() + "T00:00:00"
-        // Asynchronous network call through enqueue
-        weatherAPI.getTwentyFourHourForecast(dateMidnightTime)
-            .enqueue(object : Callback<TwentyFourHourForecast.Response> {
-                override fun onResponse(
-                    call: Call<TwentyFourHourForecast.Response>,
-                    response: Response<TwentyFourHourForecast.Response>
-                ) {
-                    val result = response.body() ?: return // null check
-                    twentyFourHourParser = TwentyFourHourParser(result)
-                    txtRegion.text = getString(R.string.country_name)
-                    txtTemp.text =
-                        twentyFourHourParser.getGeneralAvgTemperature().toString() + DEGREE
-                    txtWeatherCondition.text =
-                        determineCurrentForecastDescription(twentyFourHourParser.getGeneralForecast())
-                    determineCurrentWeatherIcon(twentyFourHourParser.getGeneralForecast())
-                    viewModel.txtDate = twentyFourHourParser.getCurrentDate()
-                    viewModel.txtMorningWeatherCondition =
-                        twentyFourHourParser.getForecastCategory(twentyFourHourParser.getMorningEastForecast())
-                            .toString()
-                    viewModel.txtAfternoonWeatherCondition =
-                        twentyFourHourParser.getForecastCategory(twentyFourHourParser.getNoonEastForecast())
-                            .toString()
-                    viewModel.txtEveningWeatherCondition =
-                        twentyFourHourParser.getForecastCategory(twentyFourHourParser.getEveningEastForecast())
-                            .toString()
-                    viewModel.txtNightWeatherCondition =
-                        twentyFourHourParser.getForecastCategory(twentyFourHourParser.getNightEastForecast())
-                            .toString()
-                    determineMorningWeatherIcon(twentyFourHourParser.getMorningEastForecast())
-                    determineAfternoonWeatherIcon(twentyFourHourParser.getNoonEastForecast())
-                    determineEveningWeatherIcon(twentyFourHourParser.getEveningEastForecast())
-                    determineNightWeatherIcon(twentyFourHourParser.getNightEastForecast())
-                    frgRegionInfo.renderingUiFromViewModel()
-                    frgRegionInfo.createAnimationForWeatherIcons() //create animation for fragment
-                    supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInfo).commitAllowingStateLoss()
-                    animateWeatherIcons() //create animation after the layout is shown to prevent asynchronous call
-                }
+    private fun uiRefreshCallback(twentyFourHourResBody: TwentyFourHourForecast.Response,
+                                  fourDayResBody: FourDayForecast.Response) {
+        twentyFourHourParser = TwentyFourHourParser(twentyFourHourResBody)
+        fourDayParser = FourDayParser(fourDayResBody)
 
-                override fun onFailure(call: Call<TwentyFourHourForecast.Response>, t: Throwable) {
-                    Log.e("MainActivity", "getTwentyFourHourData onFailure()", t)
-                }
-            })
+        updateTwentyFourHourUi(twentyFourHourParser)
+        updateFourDayUi(fourDayParser)
     }
 
-    private fun getFourDayData() {
-        // Asynchronous network call through enqueue
-        weatherAPI.getFourDayForecast()
-            .enqueue(object : Callback<FourDayForecast.Response> {
-                override fun onResponse(
-                    call: Call<FourDayForecast.Response>,
-                    response: Response<FourDayForecast.Response>
-                ) {
-                    val result = response.body() ?: return // null check
-                    fourDayParser = FourDayParser(result)
-                    viewModel.txtNext1Date = fourDayParser.getRelativeDate(0)
-                    viewModel.txtNext2Date = fourDayParser.getRelativeDate(1)
-                    viewModel.txtNext3Date = fourDayParser.getRelativeDate(2)
-                    viewModel.txtNext4Date = fourDayParser.getRelativeDate(3)
-                    viewModel.imgNext1DateWeatherCondition =
-                        determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(0))
-                    viewModel.imgNext1DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(0))
-                    viewModel.txtNext1DateTemp = fourDayParser.getGeneralAvgTemperature(0).toString() + DEGREE
-                    viewModel.imgNext2DateWeatherCondition =
-                        determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(1))
-                    viewModel.imgNext2DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(1))
-                    viewModel.txtNext2DateTemp = fourDayParser.getGeneralAvgTemperature(1).toString() + DEGREE
-                    viewModel.imgNext3DateWeatherCondition =
-                        determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(2))
-                    viewModel.imgNext3DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(2))
-                    viewModel.txtNext3DateTemp = fourDayParser.getGeneralAvgTemperature(2).toString() + DEGREE
-                    viewModel.imgNext4DateWeatherCondition =
-                        determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(3))
-                    viewModel.imgNext4DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(3))
-                    viewModel.txtNext4DateTemp = fourDayParser.getGeneralAvgTemperature(3).toString() + DEGREE
-                    frgRegionInfo.renderingUiFromViewModel()
-                    frgRegionInfo.createAnimationForWeatherIcons() //create animation for fragment
-                    supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInfo).commitAllowingStateLoss()
-                    animateWeatherIcons() //create animation after the layout is shown to prevent asynchronous call
-                }
+    private fun updateTwentyFourHourUi(twentyFourHourParser: TwentyFourHourParser) {
+        txtRegion.text = getString(R.string.country_name)
+        txtTemp.text =
+            twentyFourHourParser.getGeneralAvgTemperature().toString() + DEGREE
+        txtWeatherCondition.text =
+            determineCurrentForecastDescription(twentyFourHourParser.getGeneralForecast())
+        determineCurrentWeatherIcon(twentyFourHourParser.getGeneralForecast())
+        viewModel.txtDate = twentyFourHourParser.getCurrentDate()
+        viewModel.txtMorningWeatherCondition =
+            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getMorningEastForecast())
+                .toString()
+        viewModel.txtAfternoonWeatherCondition =
+            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getNoonEastForecast())
+                .toString()
+        viewModel.txtEveningWeatherCondition =
+            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getEveningEastForecast())
+                .toString()
+        viewModel.txtNightWeatherCondition =
+            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getNightEastForecast())
+                .toString()
+        determineMorningWeatherIcon(twentyFourHourParser.getMorningEastForecast())
+        determineAfternoonWeatherIcon(twentyFourHourParser.getNoonEastForecast())
+        determineEveningWeatherIcon(twentyFourHourParser.getEveningEastForecast())
+        determineNightWeatherIcon(twentyFourHourParser.getNightEastForecast())
+        frgRegionInfo.renderingUiFromViewModel()
+        frgRegionInfo.createAnimationForWeatherIcons() //create animation for fragment
+        supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInfo).commitAllowingStateLoss()
+        animateWeatherIcons() //create animation after the layout is shown to prevent asynchronous call
+    }
 
-                override fun onFailure(call: Call<FourDayForecast.Response>, t: Throwable) {
-                    Log.e("MainActivity", "getFourDayData onFailure()", t)
-                }
-            })
+    private fun updateFourDayUi(fourDayParser: FourDayParser) {
+        viewModel.txtNext1Date = fourDayParser.getRelativeDate(0)
+        viewModel.txtNext2Date = fourDayParser.getRelativeDate(1)
+        viewModel.txtNext3Date = fourDayParser.getRelativeDate(2)
+        viewModel.txtNext4Date = fourDayParser.getRelativeDate(3)
+        viewModel.imgNext1DateWeatherCondition =
+            determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(0))
+        viewModel.imgNext1DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(0))
+        viewModel.txtNext1DateTemp = fourDayParser.getGeneralAvgTemperature(0).toString() + DEGREE
+        viewModel.imgNext2DateWeatherCondition =
+            determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(1))
+        viewModel.imgNext2DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(1))
+        viewModel.txtNext2DateTemp = fourDayParser.getGeneralAvgTemperature(1).toString() + DEGREE
+        viewModel.imgNext3DateWeatherCondition =
+            determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(2))
+        viewModel.imgNext3DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(2))
+        viewModel.txtNext3DateTemp = fourDayParser.getGeneralAvgTemperature(2).toString() + DEGREE
+        viewModel.imgNext4DateWeatherCondition =
+            determineNextDateWeatherIcon(fourDayParser.getGeneralForecast(3))
+        viewModel.imgNext4DateTag = determineNextDateWeatherIconTag(fourDayParser.getGeneralForecast(3))
+        viewModel.txtNext4DateTemp = fourDayParser.getGeneralAvgTemperature(3).toString() + DEGREE
+        frgRegionInfo.renderingUiFromViewModel()
+        frgRegionInfo.createAnimationForWeatherIcons() //create animation for fragment
+        supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInfo).commitAllowingStateLoss()
+        animateWeatherIcons() //create animation after the layout is shown to prevent asynchronous call
     }
 
     /**
