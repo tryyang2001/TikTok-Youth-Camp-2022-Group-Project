@@ -1,6 +1,7 @@
 package com.example.weatherreport.network.parsers
 
 import com.example.weatherreport.network.types.FourDayForecast
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class FourDayParser(res: FourDayForecast.Response): ForecastParser() {
@@ -9,7 +10,7 @@ class FourDayParser(res: FourDayForecast.Response): ForecastParser() {
     init {
         this.res = res
     }
-    
+
     override fun getCurrentDate(): String {
         val formatter = DateTimeFormatter.ofPattern("d/M")
         return datetime.format(formatter)
@@ -22,7 +23,9 @@ class FourDayParser(res: FourDayForecast.Response): ForecastParser() {
     }
 
     fun getRelativeDate(day_index: Int): String {
-        return res.items[0].forecasts[day_index].date.format("d/M")
+        val dateString = res.items[0].forecasts[day_index].date
+        val formatter = DateTimeFormatter.ofPattern("d/M")
+        return LocalDate.parse(dateString).format(formatter)
     }
 
     fun getGeneralForecast(day_index: Int): String {

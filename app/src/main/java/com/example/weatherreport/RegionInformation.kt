@@ -10,24 +10,14 @@ import android.widget.TextView
 import android.view.animation.AnimationUtils
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import com.example.weatherreport.network.parsers.FourDayParser
+import java.util.Calendar
 import kotlin.concurrent.thread
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RegionInformation.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RegionInformation : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
-    private lateinit var txtDate : TextView
+    lateinit var txtDate : TextView
     lateinit var txtMorningWeatherCondition : TextView
     lateinit var txtAfternoonWeatherCondition : TextView
+    lateinit var txtEveningWeatherCondition : TextView
     lateinit var txtNightWeatherCondition : TextView
     lateinit var txtNext1Date : TextView
     lateinit var txtNext2Date : TextView
@@ -35,28 +25,25 @@ class RegionInformation : Fragment() {
     lateinit var txtNext4Date : TextView
     lateinit var imgMorningWeatherCondition : ImageView
     lateinit var imgAfternoonWeatherCondition : ImageView
+    lateinit var imgEveningWeatherCondition : ImageView
     lateinit var imgNightWeatherCondition : ImageView
     lateinit var imgNext1DateCondition : ImageView
     lateinit var imgNext2DateCondition : ImageView
     lateinit var imgNext3DateCondition : ImageView
     lateinit var imgNext4DateCondition : ImageView
-    lateinit var parser4day : FourDayParser
+    lateinit var txtNext1DateTemp : TextView
+    lateinit var txtNext2DateTemp : TextView
+    lateinit var txtNext3DateTemp : TextView
+    lateinit var txtNext4DateTemp : TextView
     lateinit var viewModel : RegionInfoViewModel
-
-    fun getTxtDate() : TextView {
-        return txtDate
-    }
-
-    fun setTxtDate(string: String){
-        txtDate.text = string
-    }
+    private val THUNDERY = 0
+    private val RAINY = 1
+    private val FAIR_MOON = 2
+    private val FAIR_SUN = 3
+    private val CLOUDY = 4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
         viewModel = ViewModelProvider(requireActivity()).get(RegionInfoViewModel::class.java)
     }
 
@@ -67,36 +54,19 @@ class RegionInformation : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_region_information, container, false)
         getTextViewAndImageView(view)
-        txtDate.text = viewModel.txtDate
-        txtMorningWeatherCondition.text = viewModel.txtMorningWeatherCondition
-        txtAfternoonWeatherCondition.text = viewModel.txtAfternoonWeatherCondition
-        txtNightWeatherCondition.text = viewModel.txtNightWeatherCondition
-        imgMorningWeatherCondition.setBackgroundResource(0)
-        imgAfternoonWeatherCondition.setBackgroundResource(0)
-        imgNightWeatherCondition.setBackgroundResource(0)
-        imgMorningWeatherCondition.setBackgroundResource(viewModel.imgMorningWeatherCondition)
-        imgAfternoonWeatherCondition.setBackgroundResource(viewModel.imgAfternoonWeatherCondition)
-        imgNightWeatherCondition.setBackgroundResource(viewModel.imgNightWeatherCondition)
-        txtNext1Date.text = viewModel.txtNext1Date
-        txtNext2Date.text = viewModel.txtNext2Date
-        txtNext3Date.text = viewModel.txtNext3Date
-        txtNext4Date.text = viewModel.txtNext4Date
-        imgNext1DateCondition.setBackgroundResource(0)
-        imgNext2DateCondition.setBackgroundResource(0)
-        imgNext3DateCondition.setBackgroundResource(0)
-        imgNext4DateCondition.setBackgroundResource(0)
-        imgNext1DateCondition.setBackgroundResource(viewModel.imgNext1DateWeatherCondition)
-        imgNext2DateCondition.setBackgroundResource(viewModel.imgNext2DateWeatherCondition)
-        imgNext3DateCondition.setBackgroundResource(viewModel.imgNext3DateWeatherCondition)
-        imgNext4DateCondition.setBackgroundResource(viewModel.imgNext4DateWeatherCondition)
+        renderingUiFromViewModel()
         createAnimationForWeatherIcons()
         return view
     }
 
+    /**
+     * Initialize each text view and image view with their corresponding id.
+     */
     private fun getTextViewAndImageView(view : View) {
         txtDate = view.findViewById(R.id.txtDate)
         txtMorningWeatherCondition = view.findViewById(R.id.txtMorningWeatherCondition)
         txtAfternoonWeatherCondition = view.findViewById(R.id.txtAfternoonWeatherCondition)
+        txtEveningWeatherCondition = view.findViewById(R.id.txtEveningWeatherCondition)
         txtNightWeatherCondition = view.findViewById(R.id.txtNightWeatherCondition)
         txtNext1Date = view.findViewById(R.id.txtNext1Date)
         txtNext2Date = view.findViewById(R.id.txtNext2Date)
@@ -104,38 +74,54 @@ class RegionInformation : Fragment() {
         txtNext4Date = view.findViewById(R.id.txtNext4Date)
         imgMorningWeatherCondition = view.findViewById(R.id.imgMorningWeatherCondition)
         imgAfternoonWeatherCondition = view.findViewById(R.id.imgAfternoonWeatherCondition)
+        imgEveningWeatherCondition = view.findViewById(R.id.imgEveningWeatherCondition)
         imgNightWeatherCondition = view.findViewById(R.id.imgNightWeatherCondition)
         imgNext1DateCondition = view.findViewById(R.id.imgNext1Condition)
         imgNext2DateCondition = view.findViewById(R.id.imgNext2Condition)
         imgNext3DateCondition = view.findViewById(R.id.imgNext3Condition)
         imgNext4DateCondition = view.findViewById(R.id.imgNext4Condition)
+        txtNext1DateTemp = view.findViewById(R.id.txtNext1DateTemp)
+        txtNext2DateTemp = view.findViewById(R.id.txtNext2DateTemp)
+        txtNext3DateTemp = view.findViewById(R.id.txtNext3DateTemp)
+        txtNext4DateTemp = view.findViewById(R.id.txtNext4DateTemp)
     }
 
-    private fun update4DaysWeather() {
-        txtNext1Date.text = parser4day.getRelativeDate(0)
-        txtNext2Date.text = parser4day.getRelativeDate(1)
-        txtNext3Date.text = parser4day.getRelativeDate(2)
-        txtNext4Date.text = parser4day.getRelativeDate(3)
-        val txtNext1DateForecast = parser4day.getGeneralForecast(0)
-        val txtNext2DateForecast = parser4day.getGeneralForecast(1)
-        val txtNext3DateForecast = parser4day.getGeneralForecast(2)
-        val txtNext4DateForecast = parser4day.getGeneralForecast(3)
-        determineWeatherIcon(txtNext1DateForecast, imgNext1DateCondition)
-        determineWeatherIcon(txtNext2DateForecast, imgNext2DateCondition)
-        determineWeatherIcon(txtNext3DateForecast, imgNext3DateCondition)
-        determineWeatherIcon(txtNext4DateForecast, imgNext4DateCondition)
+    /**
+     * Renders Ui to ensure the text and image shown are up-to-date.
+     */
+    fun renderingUiFromViewModel() {
+        txtDate.text = viewModel.txtDate
+        txtMorningWeatherCondition.text = viewModel.txtMorningWeatherCondition
+        txtAfternoonWeatherCondition.text = viewModel.txtAfternoonWeatherCondition
+        txtEveningWeatherCondition.text = viewModel.txtEveningWeatherCondition
+        txtNightWeatherCondition.text = viewModel.txtNightWeatherCondition
+        determineWeatherIcon(viewModel.txtMorningWeatherCondition, imgMorningWeatherCondition)
+        determineWeatherIcon(viewModel.txtAfternoonWeatherCondition, imgAfternoonWeatherCondition)
+        determineWeatherIcon(viewModel.txtEveningWeatherCondition, imgEveningWeatherCondition)
+        determineWeatherIcon(viewModel.txtNightWeatherCondition, imgNightWeatherCondition)
+        txtNext1Date.text = viewModel.txtNext1Date
+        txtNext2Date.text = viewModel.txtNext2Date
+        txtNext3Date.text = viewModel.txtNext3Date
+        txtNext4Date.text = viewModel.txtNext4Date
+        imgNext1DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext1DateWeatherCondition, null))
+        imgNext1DateCondition.tag = viewModel.imgNext1DateTag
+        imgNext2DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext2DateWeatherCondition, null))
+        imgNext2DateCondition.tag = viewModel.imgNext2DateTag
+        imgNext3DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext3DateWeatherCondition, null))
+        imgNext3DateCondition.tag = viewModel.imgNext3DateTag
+        imgNext4DateCondition.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, viewModel.imgNext4DateWeatherCondition, null))
+        imgNext4DateCondition.tag = viewModel.imgNext4DateTag
+        txtNext1DateTemp.text = viewModel.txtNext1DateTemp
+        txtNext2DateTemp.text = viewModel.txtNext2DateTemp
+        txtNext3DateTemp.text = viewModel.txtNext3DateTemp
+        txtNext4DateTemp.text = viewModel.txtNext4DateTemp
     }
 
-    private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
-        when (parser4day.getForecastCategory(forecast)) {
-            "Thundery" -> imageView.setBackgroundResource(R.drawable.thundery)
-            "Cloudy" -> imageView.setBackgroundResource(R.drawable.cloudy)
-            "Fair" -> imageView.setBackgroundResource(R.drawable.sunny)
-            "Rainy" -> imageView.setBackgroundResource(R.drawable.rainy)
-        }
-    }
+    /*********************************
+     * Animation related function    *
+     *********************************/
 
-    private fun createAnimationForWeatherIcons() {
+    fun createAnimationForWeatherIcons() {
         val rotation = AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.rotation)
         rotation.fillAfter = true
         val rocking = AnimationUtils.loadAnimation(activity?.applicationContext, R.anim.rocking)
@@ -146,150 +132,105 @@ class RegionInformation : Fragment() {
         bouncing.fillBefore = true
 
         thread(start = true) {
-            if (imgMorningWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.sunny,
-                    null
-                )?.constantState
-            ) {
+            if (imgMorningWeatherCondition.tag == FAIR_SUN) {
                 imgMorningWeatherCondition.startAnimation(rotation)
             }
-            if (imgMorningWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.cloudy,
-                    null
-                )?.constantState
-            ) {
+            else if (imgMorningWeatherCondition.tag == CLOUDY) {
                 imgMorningWeatherCondition.startAnimation(bouncing)
             }
         }
         thread(start = true) {
-            if (imgAfternoonWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.sunny,
-                    null
-                )?.constantState
-            ) {
+            if (imgAfternoonWeatherCondition.tag == FAIR_SUN) {
                 imgAfternoonWeatherCondition.startAnimation(rotation)
             }
-            if (imgAfternoonWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.cloudy,
-                    null
-                )?.constantState
-            ) {
+            else if (imgAfternoonWeatherCondition.tag == CLOUDY) {
                 imgAfternoonWeatherCondition.startAnimation(bouncing)
             }
         }
         thread(start = true) {
-            if (imgNightWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.fair_moon,
-                    null
-                )?.constantState
-            ) {
+            if (imgEveningWeatherCondition.tag == FAIR_SUN) {
+                imgEveningWeatherCondition.startAnimation(rotation)
+            }
+            else if (imgEveningWeatherCondition.tag == FAIR_MOON) {
+                imgEveningWeatherCondition.startAnimation(rocking)
+            }
+            else if (imgEveningWeatherCondition.tag == CLOUDY) {
+                imgEveningWeatherCondition.startAnimation(bouncing)
+            }
+        }
+        thread(start = true) {
+            if (imgNightWeatherCondition.tag == FAIR_MOON) {
                 imgNightWeatherCondition.startAnimation(rocking)
             }
-            if (imgNightWeatherCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.cloudy,
-                    null
-                )?.constantState
-            ) {
+            else if (imgNightWeatherCondition.tag == CLOUDY) {
                 imgNightWeatherCondition.startAnimation(bouncing)
             }
         }
         thread(start = true) {
-            if (imgNext1DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.sunny,
-                    null
-                )?.constantState
-            ) {
+            if (imgNext1DateCondition.tag == FAIR_SUN) {
                 imgNext1DateCondition.startAnimation(rotation)
             }
-            if (imgNext1DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.cloudy,
-                    null
-                )?.constantState
-            ) {
+            else if (imgNext1DateCondition.tag == CLOUDY) {
                 imgNext1DateCondition.startAnimation(bouncing)
             }
         }
         thread(start = true) {
-            if (imgNext2DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.sunny,
-                    null
-                )?.constantState
-            ) {
+            if (imgNext2DateCondition.tag == FAIR_SUN) {
                 imgNext2DateCondition.startAnimation(rotation)
             }
-            if (imgNext2DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.cloudy,
-                    null
-                )?.constantState
-            ) {
+            else if (imgNext2DateCondition.tag == CLOUDY) {
                 imgNext2DateCondition.startAnimation(bouncing)
             }
         }
         thread(start = true) {
-            if (imgNext3DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.sunny,
-                    null
-                )?.constantState
-            ) {
+            if (imgNext3DateCondition.tag == FAIR_SUN) {
                 imgNext3DateCondition.startAnimation(rotation)
             }
-            if (imgNext3DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.cloudy,
-                    null
-                )?.constantState
-            ) {
+            else if (imgNext3DateCondition.tag == CLOUDY) {
                 imgNext3DateCondition.startAnimation(bouncing)
             }
         }
         thread(start = true) {
-            if (imgNext4DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.sunny,
-                    null
-                )?.constantState
-            ) {
+            if (imgNext4DateCondition.tag == FAIR_SUN) {
                 imgNext4DateCondition.startAnimation(rotation)
             }
-            if (imgNext4DateCondition.drawable?.constantState == ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.cloudy,
-                    null
-                )?.constantState
-            ) {
+            else if (imgNext4DateCondition.tag == CLOUDY) {
                 imgNext4DateCondition.startAnimation(bouncing)
             }
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RegionInformation.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegionInformation().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    /**************************************
+     * Helper functions                   *
+     **************************************/
+
+    /**
+     * Helper function to update image drawable and its tag.
+     */
+    private fun determineWeatherIcon(forecast: String, imageView : ImageView) {
+        when (forecast) {
+            "Thundery" -> {
+                imageView.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, R.drawable.thundery, null))
+                imageView.tag = THUNDERY
+            }
+            "Cloudy" -> {
+                imageView.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, R.drawable.cloudy, null))
+                imageView.tag = CLOUDY
+            }
+            "Fair" -> {
+                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                if (currTime >= 18 || currTime <= 6) {
+                    imageView.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, R.drawable.fair_moon, null))
+                    imageView.tag = FAIR_MOON
+                } else {
+                    imageView.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, R.drawable.sunny, null))
+                    imageView.tag = FAIR_SUN
                 }
             }
+            "Rainy" -> {
+                imageView.setImageDrawable(ResourcesCompat.getDrawable(requireActivity().resources, R.drawable.rainy, null))
+                imageView.tag = RAINY
+            }
+        }
     }
 }

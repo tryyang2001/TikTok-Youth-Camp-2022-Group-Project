@@ -6,33 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherreport.network.parsers.TwentyFourHourParser
-import java.util.Calendar
+import java.util.*
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SingaporeMap.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SingaporeMap : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var parser24h : TwentyFourHourParser
+    private lateinit var parser24h: TwentyFourHourParser
     private val DEGREE = "°"
-    private lateinit var viewModel : RegionInfoViewModel
+    private lateinit var viewModel: RegionInfoViewModel
+    private val THUNDERY = 0
+    private val RAINY = 1
+    private val FAIR_MOON = 2
+    private val FAIR_SUN = 3
+    private val CLOUDY = 4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
         viewModel = ViewModelProvider(requireActivity()).get(RegionInfoViewModel::class.java)
     }
 
@@ -48,90 +40,6 @@ class SingaporeMap : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         parser24h = (activity as MainActivity).getTwentyFourHourParser()
         setMapButtonOnClickListener(view)
-    }
-
-    private fun onClick(view : View) {
-        viewModel.txtDate = parser24h.getCurrentDate()
-        (activity as MainActivity).txtTemp.text = parser24h.getGeneralAvgTemperature().toString() + DEGREE
-        (activity as MainActivity).txtWeatherCondition.text = determineWeatherTextDescription(parser24h.getGeneralForecast())
-        var morningForecast : String? = null
-        var afternoonForecast : String? = null
-        var nightForecast : String? = null
-        when(view.id) {
-            R.id.btnWestZone -> {
-                (activity as MainActivity).txtRegion.text = "West Region"
-                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentWestForecast())
-                morningForecast = parser24h.getMorningWestForecast()
-                afternoonForecast = parser24h.getNoonWestForecast()
-                nightForecast = parser24h.getNightWestForecast()
-                Toast.makeText(activity?.applicationContext, "West Zone", Toast.LENGTH_SHORT).show()
-            }
-            R.id.btnNorthZone -> {
-                (activity as MainActivity).txtRegion.text = "North Region"
-                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentNorthForecast())
-                morningForecast = parser24h.getMorningNorthForecast()
-                afternoonForecast = parser24h.getNoonNorthForecast()
-                nightForecast = parser24h.getNightNorthForecast()
-                Toast.makeText(activity?.applicationContext, "North Zone", Toast.LENGTH_SHORT).show()
-            }
-            R.id.btnSouthZone -> {
-                (activity as MainActivity).txtRegion.text = "South Region"
-                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentSouthForecast())
-                morningForecast = parser24h.getMorningSouthForecast()
-                afternoonForecast = parser24h.getNoonSouthForecast()
-                nightForecast = parser24h.getNightSouthForecast()
-                Toast.makeText(activity?.applicationContext, "North East Zone", Toast.LENGTH_SHORT).show()
-            }
-            R.id.btnEastZone -> {
-                (activity as MainActivity).txtRegion.text = "East Region"
-                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentEastForecast())
-                morningForecast = parser24h.getMorningEastForecast()
-                afternoonForecast = parser24h.getNoonEastForecast()
-                nightForecast = parser24h.getNightEastForecast()
-                Toast.makeText(activity?.applicationContext, "East Zone", Toast.LENGTH_SHORT).show()
-            }
-            R.id.btnCentralZone -> {
-                (activity as MainActivity).txtRegion.text = "Central Region"
-                (activity as MainActivity).txtWeatherCondition.text = parser24h.getForecastCategory(parser24h.getCurrentCentralForecast())
-                morningForecast = parser24h.getMorningCentralForecast()
-                afternoonForecast = parser24h.getNoonCentralForecast()
-                nightForecast = parser24h.getNightCentralForecast()
-                Toast.makeText(activity?.applicationContext, "Central Zone", Toast.LENGTH_SHORT).show()
-            }
-        }
-        update24HourInfo(morningForecast, afternoonForecast, nightForecast)
-        (activity as MainActivity).btnShowMap.performClick() //to change the fragment display
-    }
-
-    private fun update24HourInfo(morningForecast : String?, afternoonForecast : String?, nightForecast : String?) {
-        viewModel.imgMorningWeatherCondition = determineWeatherIcon(morningForecast)
-        viewModel.imgAfternoonWeatherCondition = determineWeatherIcon(afternoonForecast)
-        viewModel.imgNightWeatherCondition = determineWeatherIcon(nightForecast)
-        viewModel.txtMorningWeatherCondition = determineWeatherTextDescription(morningForecast)
-        viewModel.txtAfternoonWeatherCondition = determineWeatherTextDescription(afternoonForecast)
-        viewModel.txtNightWeatherCondition = determineWeatherTextDescription(nightForecast)
-    }
-
-    private fun determineWeatherTextDescription(forecast: String?) : String {
-        return parser24h.getForecastCategory(forecast).toString()
-    }
-
-    private fun determineWeatherIcon(forecast: String?) : Int{
-        println(parser24h.getForecastCategory(forecast))
-        when (parser24h.getForecastCategory(forecast)) {
-            "Thundery" -> return R.drawable.thundery
-            "Cloudy" -> return R.drawable.cloudy
-            "Fair" -> {
-                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                return if (currTime >= 19 || currTime <= 6) {
-                    R.drawable.fair_moon
-                } else {
-                    R.drawable.sunny
-                }
-            }
-            "Rainy" -> return R.drawable.rainy
-        }
-        return 0
     }
 
     /**
@@ -150,22 +58,223 @@ class SingaporeMap : Fragment() {
         btnCentral.setOnClickListener { this.onClick(btnCentral) }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SingaporeMap.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic fun newInstance(param1: String, param2: String) =
-                SingaporeMap().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
+    /**
+     * Updates corresponding data when a button of a region is clicked.
+     */
+    private fun onClick(view: View) {
+        viewModel.txtDate = parser24h.getCurrentDate()
+        (activity as MainActivity).txtTemp.text =
+            parser24h.getGeneralAvgTemperature().toString() + DEGREE
+        var morningForecast: String? = null
+        var afternoonForecast: String? = null
+        var eveningForecast: String? = null
+        var nightForecast: String? = null
+        when (view.id) {
+            R.id.btnWestZone -> {
+                updateWestRegionCurrentInfo()
+                morningForecast = parser24h.getMorningWestForecast()
+                afternoonForecast = parser24h.getNoonWestForecast()
+                eveningForecast = parser24h.getEveningWestForecast()
+                nightForecast = parser24h.getNightWestForecast()
+            }
+            R.id.btnNorthZone -> {
+                updateNorthRegionCurrentInfo()
+                morningForecast = parser24h.getMorningNorthForecast()
+                afternoonForecast = parser24h.getNoonNorthForecast()
+                eveningForecast = parser24h.getEveningNorthForecast()
+                nightForecast = parser24h.getNightNorthForecast()
+            }
+            R.id.btnSouthZone -> {
+                updateSouthRegionCurrentInfo()
+                morningForecast = parser24h.getMorningSouthForecast()
+                afternoonForecast = parser24h.getNoonSouthForecast()
+                eveningForecast = parser24h.getEveningSouthForecast()
+                nightForecast = parser24h.getNightSouthForecast()
+            }
+            R.id.btnEastZone -> {
+                updateEastRegionCurrentInfo()
+                morningForecast = parser24h.getMorningEastForecast()
+                afternoonForecast = parser24h.getNoonEastForecast()
+                eveningForecast = parser24h.getEveningEastForecast()
+                nightForecast = parser24h.getNightEastForecast()
+            }
+            R.id.btnCentralZone -> {
+                updateCentralRegionCurrentInfo()
+                morningForecast = parser24h.getMorningCentralForecast()
+                afternoonForecast = parser24h.getNoonCentralForecast()
+                eveningForecast = parser24h.getEveningCentralForecast()
+                nightForecast = parser24h.getNightCentralForecast()
+            }
+        }
+        updateViewModelPeriodicWeatherCondition(morningForecast, afternoonForecast, eveningForecast, nightForecast)
+        (activity as MainActivity).btnShowMap.performClick() //to change the fragment display
+    }
+
+    /**
+     * Helper function to update west region current weather forecast.
+     */
+    private fun updateWestRegionCurrentInfo() {
+        (activity as MainActivity).txtRegion.text = getString(R.string.west_region)
+        (activity as MainActivity).txtWeatherCondition.text =
+            parser24h.getForecastCategory(parser24h.getCurrentWestForecast())
+        (activity as MainActivity).imgWeatherCondition.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                requireActivity().resources,
+                determineWeatherIconId(parser24h.getForecastCategory(parser24h.getCurrentWestForecast())),
+                null
+            )
+        )
+        (activity as MainActivity).imgWeatherCondition.tag =
+            determineWeatherIconTag(parser24h.getCurrentWestForecast())
+    }
+
+    /**
+     * Helper function to update north region current weather forecast.
+     */
+    private fun updateNorthRegionCurrentInfo() {
+        (activity as MainActivity).txtRegion.text = getString(R.string.north_region)
+        (activity as MainActivity).txtWeatherCondition.text =
+            parser24h.getForecastCategory(parser24h.getCurrentNorthForecast())
+        (activity as MainActivity).imgWeatherCondition.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                requireActivity().resources,
+                determineWeatherIconId(parser24h.getForecastCategory(parser24h.getCurrentNorthForecast())),
+                null
+            )
+        )
+        (activity as MainActivity).imgWeatherCondition.tag =
+            determineWeatherIconTag(parser24h.getCurrentNorthForecast())
+    }
+
+    /**
+     * Helper function to update south region current weather forecast.
+     */
+    private fun updateSouthRegionCurrentInfo() {
+        (activity as MainActivity).txtRegion.text = getString(R.string.south_region)
+        (activity as MainActivity).txtWeatherCondition.text =
+            parser24h.getForecastCategory(parser24h.getCurrentSouthForecast())
+        (activity as MainActivity).imgWeatherCondition.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                requireActivity().resources,
+                determineWeatherIconId(parser24h.getForecastCategory(parser24h.getCurrentSouthForecast())),
+                null
+            )
+        )
+        (activity as MainActivity).imgWeatherCondition.tag =
+            determineWeatherIconTag(parser24h.getCurrentSouthForecast())
+    }
+
+    /**
+     * Helper function to update east region current weather forecast.
+     */
+    private fun updateEastRegionCurrentInfo() {
+        (activity as MainActivity).txtRegion.text = getString(R.string.east_region)
+        (activity as MainActivity).txtWeatherCondition.text =
+            parser24h.getForecastCategory(parser24h.getCurrentEastForecast())
+        (activity as MainActivity).imgWeatherCondition.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                requireActivity().resources,
+                determineWeatherIconId(parser24h.getForecastCategory(parser24h.getCurrentEastForecast())),
+                null
+            )
+        )
+        (activity as MainActivity).imgWeatherCondition.tag =
+            determineWeatherIconTag(parser24h.getCurrentEastForecast())
+    }
+
+    /**
+     * Helper function to update central region current weather forecast.
+     */
+    private fun updateCentralRegionCurrentInfo() {
+        (activity as MainActivity).txtRegion.text = getString(R.string.central_region)
+        (activity as MainActivity).txtWeatherCondition.text =
+            parser24h.getForecastCategory(parser24h.getCurrentCentralForecast())
+        (activity as MainActivity).imgWeatherCondition.setImageDrawable(
+            ResourcesCompat.getDrawable(
+                requireActivity().resources,
+                determineWeatherIconId(parser24h.getForecastCategory(parser24h.getCurrentCentralForecast())),
+                null
+            )
+        )
+        (activity as MainActivity).imgWeatherCondition.tag =
+            determineWeatherIconTag(parser24h.getCurrentCentralForecast())
+    }
+
+    /**
+     * Helper function to update the morning, afternoon, evening and night weather information
+     * of the view model so that the information can be passed to the other fragment.
+     */
+    private fun updateViewModelPeriodicWeatherCondition(
+        morningForecast: String?,
+        afternoonForecast: String?,
+        eveningForecast: String?,
+        nightForecast: String?
+    ) {
+        viewModel.imgMorningWeatherCondition = determineWeatherIconId(morningForecast)
+        viewModel.imgAfternoonWeatherCondition = determineWeatherIconId(afternoonForecast)
+        viewModel.imgEveningWeatherCondition = determineWeatherIconId(eveningForecast)
+        viewModel.imgNightWeatherCondition = determineWeatherIconIdForNight(nightForecast)
+        viewModel.txtMorningWeatherCondition = determineWeatherTextDescription(morningForecast)
+        viewModel.txtAfternoonWeatherCondition = determineWeatherTextDescription(afternoonForecast)
+        viewModel.txtEveningWeatherCondition = determineWeatherTextDescription(eveningForecast)
+        viewModel.txtNightWeatherCondition = determineWeatherTextDescription(nightForecast)
+    }
+
+    /**
+     * Helper function to determine the weather category from the 4 types of weather categories.
+     */
+    private fun determineWeatherTextDescription(forecast: String?): String {
+        return parser24h.getForecastCategory(forecast).toString()
+    }
+
+    /**
+     * Helper function to determine the image tag according to its forecast.
+     */
+    private fun determineWeatherIconTag(forecast: String?) : Int {
+        when (parser24h.getForecastCategory(forecast)) {
+            "Thundery" -> return THUNDERY
+            "Rainy" -> return RAINY
+            "Fair" -> {
+                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                if (currTime >= 18 || currTime <= 6) {
+                    return FAIR_MOON
                 }
+                return FAIR_SUN
+            }
+            "CLOUDY" -> return CLOUDY
+            }
+        return -1
+    }
+
+    /**
+     * Helper function to determine the image drawable id according to its forecast.
+     */
+    private fun determineWeatherIconId(forecast: String?): Int {
+        when (parser24h.getForecastCategory(forecast)) {
+            "Thundery" -> return R.drawable.thundery
+            "Cloudy" -> return R.drawable.cloudy
+            "Fair" -> {
+                val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+                if (currTime >= 18 || currTime <= 6) {
+                    return R.drawable.fair_moon
+                }
+                return R.drawable.sunny
+            }
+            "Rainy" -> return R.drawable.rainy
+        }
+        return 0
+    }
+
+    /**
+     * Helper function to determine the image drawable for night period according to its forecast.
+     */
+    private fun determineWeatherIconIdForNight(forecast: String?) : Int {
+        when (parser24h.getForecastCategory(forecast)) {
+            "Thundery" -> return R.drawable.thundery
+            "Cloudy" -> return R.drawable.cloudy
+            "Fair" -> return R.drawable.fair_moon
+            "Rainy" -> return R.drawable.rainy
+        }
+        return 0
     }
 }
