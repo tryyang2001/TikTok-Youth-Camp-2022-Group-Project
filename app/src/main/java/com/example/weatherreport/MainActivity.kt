@@ -19,6 +19,7 @@ import com.example.weatherreport.network.types.TwentyFourHourForecast
 import com.example.weatherreport.network.parsers.FourDayParser
 import com.example.weatherreport.network.parsers.TwentyFourHourParser
 import com.example.weatherreport.network.WeatherApiService
+import com.example.weatherreport.network.parsers.ForecastParser
 import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -197,22 +198,20 @@ class MainActivity : AppCompatActivity() {
             determineCurrentForecastDescription(twentyFourHourParser.getGeneralForecast())
         determineCurrentWeatherIcon(twentyFourHourParser.getGeneralForecast())
         viewModel.txtDate = twentyFourHourParser.getCurrentDate()
-        viewModel.txtMorningWeatherCondition =
-            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getMorningEastForecast())
-                .toString()
-        viewModel.txtAfternoonWeatherCondition =
-            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getNoonEastForecast())
-                .toString()
-        viewModel.txtEveningWeatherCondition =
-            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getEveningEastForecast())
-                .toString()
-        viewModel.txtNightWeatherCondition =
-            twentyFourHourParser.getForecastCategory(twentyFourHourParser.getNightEastForecast())
-                .toString()
-        determineMorningWeatherIcon(twentyFourHourParser.getMorningEastForecast())
-        determineAfternoonWeatherIcon(twentyFourHourParser.getNoonEastForecast())
-        determineEveningWeatherIcon(twentyFourHourParser.getEveningEastForecast())
-        determineNightWeatherIcon(twentyFourHourParser.getNightEastForecast())
+
+        val morningEastForecast = twentyFourHourParser.getForecast(ForecastParser.Period.MORNING, ForecastParser.Region.EAST)
+        val noonEastForecast = twentyFourHourParser.getForecast(ForecastParser.Period.NOON, ForecastParser.Region.EAST)
+        val eveningEastForecast = twentyFourHourParser.getForecast(ForecastParser.Period.EVENING, ForecastParser.Region.EAST)
+        val nightEastForecast = twentyFourHourParser.getForecast(ForecastParser.Period.NIGHT, ForecastParser.Region.EAST)
+        viewModel.txtMorningWeatherCondition = twentyFourHourParser.getForecastCategory(morningEastForecast)
+        viewModel.txtAfternoonWeatherCondition = twentyFourHourParser.getForecastCategory(noonEastForecast)
+        viewModel.txtEveningWeatherCondition = twentyFourHourParser.getForecastCategory(eveningEastForecast)
+        viewModel.txtNightWeatherCondition = twentyFourHourParser.getForecastCategory(nightEastForecast)
+        determineMorningWeatherIcon(morningEastForecast)
+        determineAfternoonWeatherIcon(noonEastForecast)
+        determineEveningWeatherIcon(eveningEastForecast)
+        determineNightWeatherIcon(nightEastForecast)
+
         frgRegionInfo.renderingUiFromViewModel()
         frgRegionInfo.createAnimationForWeatherIcons() //create animation for fragment
         supportFragmentManager.beginTransaction().replace(R.id.fvRegionInfo, frgRegionInfo).commitAllowingStateLoss()
