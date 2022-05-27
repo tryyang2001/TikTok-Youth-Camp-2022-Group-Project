@@ -11,5 +11,5 @@ interface WeatherAPI {
     fun getTwentyFourHourForecast(@Query("date_time") date_time: String): Call<TwentyFourHourForecast.Response>
 
     @GET("4-day-weather-forecast")
-    fun getFourDayForecast(@Query("date_time") date_time: String): Call<FourDayForecast.Response>
+    fun getFourDayForecast(): Call<FourDayForecast.Response>
 }

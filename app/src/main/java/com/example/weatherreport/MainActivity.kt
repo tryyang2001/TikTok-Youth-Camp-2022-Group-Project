@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
      * the current time provided.
      */
     private fun selectBackgroundAndTextColors() {
-        val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 10
         val mainLayout = findViewById<ConstraintLayout>(R.id.mainLayout)
         val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
         if (currTime >= 18 || currTime <= 6) {
@@ -219,10 +219,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFourDayData() {
-        val date: LocalDate = LocalDate.now()
-        val dateMidnightTime: String = date.toString() + "T00:00:00"
         // Asynchronous network call through enqueue
-        weatherAPI.getFourDayForecast(dateMidnightTime)
+        weatherAPI.getFourDayForecast()
             .enqueue(object : Callback<FourDayForecast.Response> {
                 override fun onResponse(
                     call: Call<FourDayForecast.Response>,
