@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
      * the current time provided.
      */
     private fun selectBackgroundAndTextColors() {
-        val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 10
+        val currTime = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val mainLayout = findViewById<ConstraintLayout>(R.id.mainLayout)
         val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
         if (currTime >= 18 || currTime <= 6) {
